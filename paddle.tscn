@@ -4,6 +4,7 @@
 
 [node name="Paddle" type="KinematicBody2D"]
 script = ExtResource( 1 )
+player = 1
 speed = 400
 
 [node name="Polygon" type="Polygon2D" parent="."]

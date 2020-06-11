@@ -6,6 +6,7 @@
 
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 100, 540 )
+player = 0
 
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1820, 540 )
