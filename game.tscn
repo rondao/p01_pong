@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://paddle.tscn" type="PackedScene" id=1]
+[ext_resource path="res://walls.tscn" type="PackedScene" id=2]
 
 [node name="Game" type="Node2D"]
 
@@ -10,3 +11,5 @@ player = 0
 
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1820, 540 )
+
+[node name="Walls" parent="." instance=ExtResource( 2 )]
