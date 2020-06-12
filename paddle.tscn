@@ -5,10 +5,12 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 25, 100 )
 
-[node name="Paddle" type="KinematicBody2D"]
+[node name="Paddle" type="KinematicBody2D" groups=[
+"paddles",
+]]
 script = ExtResource( 1 )
 player = 1
-speed = 400
+speed = 600
 
 [node name="Polygon" type="Polygon2D" parent="."]
 offset = Vector2( -25, -100 )

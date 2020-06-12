@@ -4,9 +4,12 @@
 
 [sub_resource type="CircleShape2D" id=1]
 
-[node name="Ball" type="KinematicBody2D"]
+[node name="Ball" type="KinematicBody2D" groups=[
+"ball",
+]]
 script = ExtResource( 1 )
 radius = 15.0
+bounceAccel = 1.15
 startVelocity = Vector2( 400, 200 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

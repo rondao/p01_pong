@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 export(float) var radius
 
+export(float) var bounceAccel
 export(Vector2) var startVelocity
 var velocity = Vector2()
 
@@ -17,3 +18,5 @@ func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)
 	if collision:
 		velocity = velocity.bounce(collision.normal)
+		if collision.collider.is_in_group("paddles"):
+			velocity *= bounceAccel
