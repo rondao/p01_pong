@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://paddle.tscn" type="PackedScene" id=1]
 [ext_resource path="res://walls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ball.tscn" type="PackedScene" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 10, 540 )
 
 [node name="Game" type="Node2D"]
 
@@ -18,3 +21,21 @@ position = Vector2( 1820, 540 )
 [node name="Ball" parent="." instance=ExtResource( 3 )]
 position = Vector2( 960, 540 )
 startVelocity = Vector2( -400, 200 )
+
+[node name="LeftGoal" type="StaticBody2D" parent="."]
+position = Vector2( 0, 540 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftGoal"]
+shape = SubResource( 1 )
+
+[node name="RightGoal" type="StaticBody2D" parent="."]
+position = Vector2( 1920, 540 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightGoal"]
+shape = SubResource( 1 )

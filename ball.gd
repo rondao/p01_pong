@@ -1,13 +1,15 @@
 extends KinematicBody2D
 
-export(float) var radius
+signal scored(player)
 
+export(float) var radius
 export(float) var bounceAccel
 export(Vector2) var startVelocity
+
 var velocity = Vector2()
 
 func _ready():
-	velocity = startVelocity
+	_reset(Vector2.RIGHT)
 
 func _draw():
 	draw_circle(Vector2.ZERO, radius, Color.white)
@@ -20,3 +22,13 @@ func _physics_process(delta):
 		velocity = velocity.bounce(collision.normal)
 		if collision.collider.is_in_group("paddles"):
 			velocity *= bounceAccel
+		elif collision.collider.name == "LeftGoal":
+			_reset(Vector2.LEFT)
+			emit_signal("scored", 2)
+		elif collision.collider.name == "RightGoal":
+			_reset(Vector2.RIGHT)
+			emit_signal("scored", 1)
+
+func _reset(side: Vector2):
+	position = Vector2(960, 540);
+	velocity = startVelocity * side
