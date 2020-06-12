@@ -20,7 +20,6 @@ position = Vector2( 1820, 540 )
 
 [node name="Ball" parent="." instance=ExtResource( 3 )]
 position = Vector2( 960, 540 )
-startVelocity = Vector2( -400, 200 )
 
 [node name="LeftGoal" type="StaticBody2D" parent="."]
 position = Vector2( 0, 540 )

@@ -34,4 +34,4 @@ func _reset(side: Vector2):
 	position = Vector2(OS.window_size.x / 2, OS.window_size.y / 2);
 	
 	side.y = _rng.randf_range(-1.25, 1.25)
-	_velocity = startVelocity * side
+	_velocity = startVelocity * side.normalized()
