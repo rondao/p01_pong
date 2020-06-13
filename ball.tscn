@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ball.gd" type="Script" id=1]
+
+[sub_resource type="CircleShape2D" id=1]
+
+[node name="Ball" type="KinematicBody2D" groups=[
+"ball",
+]]
+script = ExtResource( 1 )
+radius = 15.0
+bounceAccel = 1.15
+startVelocity = Vector2( 500, 300 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
