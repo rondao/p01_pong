@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
-signal scored(player)
+signal right_scored()
+signal left_scored()
 
 export(float) var radius
 export(float) var bounceAccel
@@ -25,10 +26,10 @@ func _physics_process(delta):
 			_velocity *= bounceAccel
 		elif collision.collider.name == "LeftGoal":
 			_reset(Vector2.LEFT)
-			emit_signal("scored", 2)
+			emit_signal("right_scored")
 		elif collision.collider.name == "RightGoal":
 			_reset(Vector2.RIGHT)
-			emit_signal("scored", 1)
+			emit_signal("left_scored")
 
 func _reset(side: Vector2):
 	position = Vector2(OS.window_size.x / 2, OS.window_size.y / 2);
