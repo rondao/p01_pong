@@ -10,6 +10,8 @@ export(Vector2) var startVelocity
 var _velocity = Vector2()
 var _rng = RandomNumberGenerator.new()
 
+onready var _center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
+
 func _ready():
 	_reset(Vector2.RIGHT)
 
@@ -32,7 +34,7 @@ func _physics_process(delta):
 			emit_signal("left_scored")
 
 func _reset(side: Vector2):
-	position = Vector2(OS.window_size.x / 2, OS.window_size.y / 2);
+	position = _center;
 	
 	side.y = _rng.randf_range(-1.25, 1.25)
 	_velocity = startVelocity * side.normalized()
