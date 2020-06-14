@@ -9,8 +9,8 @@
 ]]
 script = ExtResource( 1 )
 radius = 15.0
-bounceAccel = 1.15
-startVelocity = Vector2( 500, 300 )
+bounce_accel = 1.15
+start_velocity = Vector2( 500, 300 )
 bonus_velocity_minimum = 0.75
 bonus_velocity_range = 0.5
 angular_y_velocity = 700.0
