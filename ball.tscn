@@ -11,6 +11,9 @@ script = ExtResource( 1 )
 radius = 15.0
 bounceAccel = 1.15
 startVelocity = Vector2( 500, 300 )
+bonus_velocity_minimum = 0.75
+bonus_velocity_range = 0.5
+angular_y_velocity = 700.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )

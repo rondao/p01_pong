@@ -7,6 +7,11 @@ export(float) var radius
 export(float) var bounceAccel
 export(Vector2) var startVelocity
 
+export(float) var bonus_velocity_minimum
+export(float) var bonus_velocity_range
+
+export(float) var angular_y_velocity
+
 var _velocity = Vector2()
 var _bonus_velocity = 1.0
 
@@ -36,9 +41,11 @@ func _collide_paddles(collision):
 			var collision_relative_position = \
 				collision.position.y - collision.collider.position.y
 			var percent_distance_from_center = \
-				abs(collision_relative_position / collision.collider_shape.shape.extents.y)
+				collision_relative_position / collision.collider_shape.shape.extents.y
 
-			_bonus_velocity = 0.7 + percent_distance_from_center
+			_bonus_velocity = bonus_velocity_minimum + bonus_velocity_range * abs(percent_distance_from_center)
+
+			_velocity.y = percent_distance_from_center * angular_y_velocity
 			_velocity = _velocity.bounce(collision.normal)
 		Globals.PaddleType.GEOMETRIC:
 			_velocity = _velocity.bounce(collision.normal)
