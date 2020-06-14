@@ -3,6 +3,8 @@ extends KinematicBody2D
 enum Player {HUMAN_01, HUMAN_02, NONE}
 export(Player) var player
 
+export(Globals.PaddleType) var paddleType
+
 export(int) var speed
 var velocity = Vector2()
 
