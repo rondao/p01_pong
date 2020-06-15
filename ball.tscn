@@ -12,7 +12,7 @@ radius = 15.0
 bounce_accel = 1.2
 start_velocity = Vector2( 500, 300 )
 bonus_velocity_minimum = 0.65
-bonus_velocity_range = 1.0
+bonus_velocity_range = 0.8
 angular_y_velocity = 700.0
 maximum_x_velocity = 1600.0
 
