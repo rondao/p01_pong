@@ -4,6 +4,7 @@ signal right_scored()
 signal left_scored()
 
 export(float) var radius
+
 export(float) var bounce_accel
 export(Vector2) var start_velocity
 
@@ -11,6 +12,7 @@ export(float) var bonus_velocity_minimum
 export(float) var bonus_velocity_range
 
 export(float) var angular_y_velocity
+export(float) var maximum_x_velocity
 
 var _velocity = Vector2()
 var _bonus_velocity = 1.0
@@ -52,6 +54,7 @@ func _collide_paddles(collision):
 			_bonus_velocity = 1.0
 
 	_velocity *= bounce_accel
+	_velocity.x = min(_velocity.x, maximum_x_velocity)
 
 func _collide_walls(collision):
 	_velocity = _velocity.bounce(collision.normal)
