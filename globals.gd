@@ -1,3 +1,3 @@
 extends Node
 
-enum PaddleType {GEOMETRIC, ANGULAR}
+enum PaddleType {GEOMETRIC, ANGULAR, DIFFERENTIAL}

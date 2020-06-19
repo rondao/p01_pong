@@ -17,6 +17,8 @@ export(float) var maximum_x_velocity
 var _velocity = Vector2()
 var _bonus_velocity = 1.0
 
+var _spin = 0.0
+
 onready var _center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
 func _ready():
@@ -24,6 +26,11 @@ func _ready():
 
 func _draw():
 	draw_circle(Vector2.ZERO, radius, Color.white)
+
+func _process(delta):
+	if _spin:
+		_velocity.y += _spin * delta * 3
+		_spin -= _spin * delta * 3
 
 func _physics_process(delta):
 	var collision = move_and_collide(_velocity * _bonus_velocity * delta)
@@ -39,6 +46,14 @@ func _physics_process(delta):
 
 func _collide_paddles(collision):
 	match collision.collider.paddleType:
+		Globals.PaddleType.DIFFERENTIAL:
+			_bonus_velocity = bonus_velocity_minimum + abs(collision.collider.velocity.y) * 0.0015
+			if collision.collider.velocity.y:
+				_spin = -collision.collider.velocity.y * 3
+				_velocity.y = collision.collider.velocity.y * 1.5
+			else:
+				_spin = -_velocity.y * 1.5
+			_velocity = _velocity.bounce(collision.normal)
 		Globals.PaddleType.ANGULAR:
 			var collision_relative_position = \
 				collision.position.y - collision.collider.position.y
@@ -49,15 +64,18 @@ func _collide_paddles(collision):
 
 			_velocity.y = percent_distance_from_center * angular_y_velocity
 			_velocity = _velocity.bounce(collision.normal)
+			_spin = 0.0
 		Globals.PaddleType.GEOMETRIC:
 			_velocity = _velocity.bounce(collision.normal)
 			_bonus_velocity = 1.0
+			_spin = 0.0
 
 	_velocity *= bounce_accel
 	_velocity.x = min(_velocity.x, maximum_x_velocity)
 
 func _collide_walls(collision):
 	_velocity = _velocity.bounce(collision.normal)
+	_spin = -_spin
 
 func _collide_left_goal():
 	_reset(Vector2.LEFT)
@@ -73,3 +91,4 @@ func _reset(side: Vector2):
 	side.y = rand_range(-1.25, 1.25)
 	_velocity = start_velocity * side.normalized()
 	_bonus_velocity = 1.0
+	_spin = 0.0
