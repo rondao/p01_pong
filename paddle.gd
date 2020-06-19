@@ -16,8 +16,7 @@ func _physics_process(delta):
 		Player.HUMAN_02:
 			_handle_input("player_02_up", "player_02_down")
 	
-# warning-ignore:return_value_discarded
-	move_and_slide(velocity)
+	velocity = move_and_slide(velocity)
 
 func _handle_input(up_action, down_action):
 	if Input.is_action_pressed(up_action):
