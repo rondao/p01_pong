@@ -8,20 +8,43 @@ export(Globals.PaddleType) var paddleType
 export(int) var speed
 var velocity = Vector2()
 
-# warning-ignore:unused_argument
+var charge = 0.0
+var _max_charge = 0.5
+
 func _physics_process(delta):
 	match player:
 		Player.HUMAN_01:
-			_handle_input("player_01_up", "player_01_down")
+			_handle_input("player_01", delta)
 		Player.HUMAN_02:
-			_handle_input("player_02_up", "player_02_down")
-	
-	velocity = move_and_slide(velocity)
+			_handle_input("player_02", delta)
 
-func _handle_input(up_action, down_action):
-	if Input.is_action_pressed(up_action):
+	var collision = move_and_collide(velocity * delta)
+	if collision:
+		if collision.collider.is_in_group("ball"):
+			_collide_ball()
+		elif collision.collider.is_in_group("walls"):
+			_collide_walls()
+
+func _handle_input(player_number, delta):
+	if Input.is_action_pressed(player_number + "_up"):
 		velocity.y = -speed
-	elif Input.is_action_pressed(down_action):
+	elif Input.is_action_pressed(player_number + "_down"):
 		velocity.y = speed
 	else:
 		velocity = Vector2.ZERO
+
+	if Input.is_action_pressed(player_number + "_charge"):
+		_set_charge(min(charge + delta, _max_charge))
+		velocity.y *= 1.0 - charge
+	else:
+		_set_charge(0.0)
+
+func _collide_ball():
+	_set_charge(0.0)
+
+func _collide_walls():
+	velocity = Vector2.ZERO
+
+func _set_charge(charge_value):
+	charge = charge_value
+	modulate = Color(1.0, 1.0 - charge, 1.0 - charge)
