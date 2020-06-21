@@ -71,7 +71,7 @@ func _collide_paddles(collision):
 			_spin = 0.0
 
 	_velocity *= bounce_accel
-	_velocity.x = min(_velocity.x, maximum_x_velocity)
+	_velocity.x = sign(_velocity.x) * min(abs(_velocity.x), maximum_x_velocity)
 
 	_bonus_velocity += collision.collider.charge
 	_spin *= 1.0 + collision.collider.charge
