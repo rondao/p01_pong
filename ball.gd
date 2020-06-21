@@ -58,7 +58,7 @@ func _collide_paddles(collision):
 			var collision_relative_position = \
 				collision.position.y - collision.collider.position.y
 			var percent_distance_from_center = \
-				collision_relative_position / collision.collider_shape.shape.extents.y
+				collision_relative_position / collision.collider_shape.shape.extents.x
 
 			_bonus_velocity = bonus_velocity_minimum + bonus_velocity_range * abs(percent_distance_from_center)
 
