@@ -1,8 +1,12 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://ball.gd" type="Script" id=1]
+[ext_resource path="res://ball_trail.gd" type="Script" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
+
+[sub_resource type="Gradient" id=2]
+colors = PoolColorArray( 1, 0, 0, 0, 1, 0, 0, 1 )
 
 [node name="Ball" type="KinematicBody2D" groups=[
 "ball",
@@ -18,3 +22,11 @@ maximum_x_velocity = 1600.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="Trail" type="Line2D" parent="."]
+z_index = -1
+width = 30.0
+default_color = Color( 1, 1, 1, 1 )
+gradient = SubResource( 2 )
+script = ExtResource( 2 )
+length = 15
