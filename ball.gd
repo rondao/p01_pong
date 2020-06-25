@@ -19,6 +19,8 @@ var _bonus_velocity = 1.0
 
 var _spin = 0.0
 
+onready var _trail : BallTrail = $Trail
+
 onready var _center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
 func _ready():
@@ -76,6 +78,11 @@ func _collide_paddles(collision):
 	_bonus_velocity += collision.collider.charge
 	_spin *= 1.0 + collision.collider.charge
 
+	if _bonus_velocity > 1.0:
+		_trail.enable()
+	else:
+		_trail.disable()
+
 func _collide_walls(collision):
 	_velocity = _velocity.bounce(collision.normal)
 	_spin = -_spin
@@ -95,3 +102,5 @@ func _reset(side: Vector2):
 	_velocity = start_velocity * side.normalized()
 	_bonus_velocity = 1.0
 	_spin = 0.0
+
+	_trail.disable()
