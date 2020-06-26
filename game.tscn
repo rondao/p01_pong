@@ -17,11 +17,11 @@ font_data = ExtResource( 5 )
 [node name="Game" type="Node2D"]
 
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
-position = Vector2( 100, 540 )
+position = Vector2( 50, 540 )
 paddleType = 1
 
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
-position = Vector2( 1820, 540 )
+position = Vector2( 1870, 540 )
 rotation = 3.14159
 player = 1
 paddleType = 2
@@ -32,7 +32,7 @@ paddleType = 2
 position = Vector2( 960, 540 )
 
 [node name="LeftGoal" type="StaticBody2D" parent="."]
-position = Vector2( 0, 540 )
+position = Vector2( -40, 540 )
 __meta__ = {
 "_edit_group_": true
 }
@@ -41,7 +41,7 @@ __meta__ = {
 shape = SubResource( 1 )
 
 [node name="RightGoal" type="StaticBody2D" parent="."]
-position = Vector2( 1920, 540 )
+position = Vector2( 1960, 540 )
 __meta__ = {
 "_edit_group_": true
 }
