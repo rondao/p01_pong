@@ -19,12 +19,17 @@ var _bonus_velocity = 1.0
 
 var _spin = 0.0
 
+onready var _trail : BallTrail = $Trail
+var _trail_enabled := false
+
 onready var _center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
 func _ready():
 	_reset(Vector2.RIGHT)
 
 func _draw():
+	if _trail_enabled:
+		draw_circle(Vector2.ZERO, radius + 2, Color.red)
 	draw_circle(Vector2.ZERO, radius, Color.white)
 
 func _process(delta):
@@ -76,6 +81,11 @@ func _collide_paddles(collision):
 	_bonus_velocity += collision.collider.charge
 	_spin *= 1.0 + collision.collider.charge
 
+	if _bonus_velocity > 1.0:
+		_show_trail()
+	else:
+		_hide_trail()
+
 func _collide_walls(collision):
 	_velocity = _velocity.bounce(collision.normal)
 	_spin = -_spin
@@ -95,3 +105,15 @@ func _reset(side: Vector2):
 	_velocity = start_velocity * side.normalized()
 	_bonus_velocity = 1.0
 	_spin = 0.0
+
+	_hide_trail()
+	
+func _show_trail():
+	_trail_enabled = true
+	_trail.enable()
+	update()
+
+func _hide_trail():
+	_trail_enabled = false
+	_trail.disable()
+	update()

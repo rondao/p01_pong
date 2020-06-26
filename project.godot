@@ -8,9 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Line2D",
+"class": "BallTrail",
+"language": "GDScript",
+"path": "res://ball_trail.gd"
+} ]
 _global_script_class_icons={
-
+"BallTrail": ""
 }
 
 [application]

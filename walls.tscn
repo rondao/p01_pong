@@ -1,7 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 960, 10 )
+extents = Vector2( 1000, 10 )
 
 [node name="Walls" type="Node2D"]
 
@@ -10,7 +10,7 @@ extents = Vector2( 960, 10 )
 ]]
 
 [node name="Polygon2D" type="Polygon2D" parent="UpperWall"]
-polygon = PoolVector2Array( 0, 0, 1920, 0, 1920, 20, 0, 20 )
+polygon = PoolVector2Array( -40, 0, 1960, 0, 1960, 20, -40, 20 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UpperWall"]
 position = Vector2( 960, 10 )
@@ -22,7 +22,7 @@ shape = SubResource( 1 )
 position = Vector2( 0, 1060 )
 
 [node name="Polygon2D" type="Polygon2D" parent="LowerWall"]
-polygon = PoolVector2Array( 0, 0, 1920, 0, 1920, 20, 0, 20 )
+polygon = PoolVector2Array( -40, 0, 1960, 0, 1960, 20, -40, 20 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LowerWall"]
 position = Vector2( 960, 10 )
