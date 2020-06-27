@@ -3,6 +3,8 @@ extends KinematicBody2D
 signal right_scored()
 signal left_scored()
 
+export (PackedScene) var CollisionSfx
+
 export(float) var radius
 
 export(float) var bounce_accel
@@ -42,8 +44,10 @@ func _physics_process(delta):
 	if collision:
 		if collision.collider.is_in_group("paddles"):
 			_collide_paddles(collision)
+			_spawn_collision_sfx()
 		elif collision.collider.is_in_group("walls"):
 			_collide_walls(collision)
+			_spawn_collision_sfx()
 		elif collision.collider.name == "LeftGoal":
 			_collide_left_goal()
 		elif collision.collider.name == "RightGoal":
@@ -117,3 +121,8 @@ func _hide_trail():
 	_trail_enabled = false
 	_trail.disable()
 	update()
+
+func _spawn_collision_sfx():
+	var sfx : Node2D = CollisionSfx.instance()
+	sfx.position = position
+	get_parent().add_child(sfx)
