@@ -8,7 +8,6 @@ var _elapsed_time := 0.0
 var _active := false
 
 
-# warning-ignore:unused_argument
 func _process(delta: float):
 	# Freeze trail position so it is not transformed with parent.
 	global_transform = Transform2D.IDENTITY
