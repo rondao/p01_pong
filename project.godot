@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "BallTrail",
 "language": "GDScript",
 "path": "res://ball_trail.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "Paddle",
+"language": "GDScript",
+"path": "res://paddle.gd"
 } ]
 _global_script_class_icons={
-"BallTrail": ""
+"BallTrail": "",
+"Paddle": ""
 }
 
 [application]
