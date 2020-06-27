@@ -1,8 +1,10 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://ball.gd" type="Script" id=1]
-[ext_resource path="res://ball_trail.gd" type="Script" id=2]
-[ext_resource path="res://collision_sfx.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game/scripts/ball.gd" type="Script" id=1]
+[ext_resource path="res://game/scripts/ball_trail.gd" type="Script" id=2]
+[ext_resource path="res://game/scenes/collision_sfx.tscn" type="PackedScene" id=3]
+
+
 
 [sub_resource type="CircleShape2D" id=1]
 
