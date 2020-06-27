@@ -12,21 +12,35 @@ _global_script_classes=[ {
 "base": "Line2D",
 "class": "BallTrail",
 "language": "GDScript",
-"path": "res://ball_trail.gd"
+"path": "res://game/scripts/ball_trail.gd"
+}, {
+"base": "",
+"class": "GitAPI",
+"language": "NativeScript",
+"path": "res://git_api.gdns"
+}, {
+"base": "Node",
+"class": "Globals",
+"language": "GDScript",
+"path": "res://game/scripts/globals.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "Paddle",
+"language": "GDScript",
+"path": "res://game/scripts/paddle.gd"
 } ]
 _global_script_class_icons={
-"BallTrail": ""
+"BallTrail": "",
+"GitAPI": "",
+"Globals": "",
+"Paddle": ""
 }
 
 [application]
 
 config/name="p01_pong"
-run/main_scene="res://game.tscn"
+run/main_scene="res://game/scenes/game.tscn"
 config/icon="res://icon.png"
-
-[autoload]
-
-Globals="*res://globals.gd"
 
 [debug]
 
@@ -42,6 +56,10 @@ window/size/height=1080
 window/size/borderless=true
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
+
+[gdnative]
+
+singletons=[ "res://git_api.gdnlib" ]
 
 [input]
 
