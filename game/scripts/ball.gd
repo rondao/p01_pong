@@ -148,6 +148,7 @@ func _spawn_collision_sfx():
 func _spawn_goal_sfx(side : String):
 	var sfx := GoalSfx.instance() as Node2D
 
+	sfx.z_index = -1
 	sfx.position = position
 	if side == "left":
 		sfx.rotation = 0
