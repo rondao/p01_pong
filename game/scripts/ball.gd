@@ -4,6 +4,7 @@ signal right_scored()
 signal left_scored()
 
 export(PackedScene) var CollisionSfx: PackedScene
+export(PackedScene) var GoalSfx: PackedScene
 
 export(float) var radius: float
 
@@ -104,11 +105,13 @@ func _collide_walls(collision: KinematicCollision2D):
 
 
 func _collide_left_goal():
+	_spawn_goal_sfx("left")
 	_reset(Vector2.LEFT)
 	emit_signal("right_scored")
 
 
 func _collide_right_goal():
+	_spawn_goal_sfx("right")
 	_reset(Vector2.RIGHT)
 	emit_signal("left_scored")
 
@@ -135,7 +138,20 @@ func _hide_trail():
 	_trail.disable()
 	update()
 
+
 func _spawn_collision_sfx():
 	var sfx := CollisionSfx.instance() as Node2D
 	sfx.position = position
+	get_parent().add_child(sfx)
+
+
+func _spawn_goal_sfx(side : String):
+	var sfx := GoalSfx.instance() as Node2D
+
+	sfx.position = position
+	if side == "left":
+		sfx.rotation = 0
+	if side == "right":
+		sfx.rotation = PI
+
 	get_parent().add_child(sfx)

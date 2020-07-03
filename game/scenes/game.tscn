@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game/scenes/paddle.tscn" type="PackedScene" id=1]
 [ext_resource path="res://game/scenes/walls.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://game/scripts/net_line.gd" type="Script" id=4]
 [ext_resource path="res://fonts/FreeSansBold.otf" type="DynamicFontData" id=5]
 [ext_resource path="res://game/scripts/score.gd" type="Script" id=6]
+[ext_resource path="res://game/scenes/goal_sfx.tscn" type="PackedScene" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 540 )
@@ -30,6 +31,7 @@ paddleType = 2
 
 [node name="Ball" parent="." instance=ExtResource( 3 )]
 position = Vector2( 960, 540 )
+GoalSfx = ExtResource( 7 )
 
 [node name="LeftGoal" type="StaticBody2D" parent="."]
 position = Vector2( -40, 540 )
