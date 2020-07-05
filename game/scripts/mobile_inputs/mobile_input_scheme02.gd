@@ -12,6 +12,9 @@ extends Node2D
 # - Touching the right side will charge the Paddle.
 #
 
+onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
+
+
 func _input(event: InputEvent):
 	if event is InputEventScreenDrag:
 		_drag_to_action(event as InputEventScreenDrag)
@@ -20,18 +23,18 @@ func _input(event: InputEvent):
 
 
 func _drag_to_action(drag: InputEventScreenDrag):
-	if drag.position.x < 960:
-		Input.action_press("player_01_move_to", drag.position.y / 1080)
+	if drag.position.x < _center.x:
+		Input.action_press("player_01_move_to", drag.position.y / get_viewport().size.y)
 
 
 func _touch_to_action(touch: InputEventScreenTouch):
 	if touch.is_pressed():
-		if touch.position.x < 960:
-			Input.action_press("player_01_move_to", touch.position.y / 1080)
+		if touch.position.x < _center.x:
+			Input.action_press("player_01_move_to", touch.position.y / get_viewport().size.y)
 		else:
 			Input.action_press("player_01_charge")
 	else:
-		if touch.position.x < 960:
+		if touch.position.x < _center.x:
 			Input.action_release("player_01_move_to")
 		else:
 			Input.action_release("player_01_charge")
