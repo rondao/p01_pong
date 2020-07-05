@@ -1,5 +1,17 @@
 extends Node2D
 
+## Mobile Input Scheme 01
+#
+# This scheme relies on multi-touch, as both left
+#  and right side may be pressed simultaneously.
+#
+# Left side of screen controls the Paddle movement.
+# - Touching the upper left side moves the Paddle up.
+# - Touching the lower left side moves the Paddle down.
+#
+# Right side of the screen control the charge.
+# - Touching the right side will charge the Paddle.
+#
 
 func _input(event: InputEvent):
 	if event is InputEventScreenDrag:
@@ -16,6 +28,7 @@ func _drag_to_action(drag: InputEventScreenDrag):
 		else:
 			Input.action_release("player_01_up")
 			Input.action_press("player_01_down")
+
 
 func _touch_to_action(touch: InputEventScreenTouch):
 	if touch.is_pressed():
