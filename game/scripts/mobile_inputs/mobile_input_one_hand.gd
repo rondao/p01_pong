@@ -14,7 +14,7 @@ onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y 
 export(String) var player := "player_01"
 export(Globals.Side) var side: int = Globals.Side.LEFT
 
-const DRAG_FOR_CHARGE := 100
+const DRAG_FOR_CHARGE := 150
 var _touch_position := Vector2.ZERO
 
 
