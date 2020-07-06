@@ -11,8 +11,12 @@ extends Node2D
 
 onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
+export(String) var player := "player_01"
+export(Globals.Side) var side: int = Globals.Side.LEFT
+
 const DRAG_FOR_CHARGE := 100
 var _touch_position := Vector2.ZERO
+
 
 func _input(event: InputEvent):
 	if event is InputEventScreenDrag:
@@ -22,16 +26,26 @@ func _input(event: InputEvent):
 
 
 func _drag_to_action(drag: InputEventScreenDrag):
-	Input.action_press("player_01_move_to", drag.position.y / get_viewport().size.y)
-	
-	if abs(drag.position.x - _touch_position.x) > DRAG_FOR_CHARGE:
-		Input.action_press("player_01_charge")
+	if _is_correct_side(drag.position.x):
+		Input.action_press(player + "_move_to", drag.position.y / get_viewport().size.y)
+
+		if abs(drag.position.x - _touch_position.x) > DRAG_FOR_CHARGE:
+			Input.action_press(player + "_charge")
 
 
 func _touch_to_action(touch: InputEventScreenTouch):
-	if touch.is_pressed():
-		_touch_position = touch.position
-		Input.action_press("player_01_move_to", touch.position.y / get_viewport().size.y)
-	else:
-		Input.action_release("player_01_move_to")
-		Input.action_release("player_01_charge")
+	if _is_correct_side(touch.position.x):
+		if touch.is_pressed():
+			_touch_position = touch.position
+			Input.action_press(player + "_move_to", touch.position.y / get_viewport().size.y)
+		else:
+			Input.action_release(player + "_move_to")
+			Input.action_release(player + "_charge")
+
+
+func _is_correct_side(x_position: float):
+	match side:
+		Globals.Side.LEFT:
+			return x_position < _center.x
+		Globals.Side.RIGHT:
+			return x_position > _center.x
