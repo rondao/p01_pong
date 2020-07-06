@@ -34,6 +34,17 @@ func _handle_input(player_number: String, delta: float):
 		velocity.y = -speed
 	elif Input.is_action_pressed(player_number + "_down"):
 		velocity.y = speed
+	elif Input.is_action_pressed(player_number + "_move_to"):
+		var move_to := Input.get_action_strength(player_number + "_move_to")
+		var relative_difference = move_to - (position.y / get_viewport().size.y)
+
+		if abs(relative_difference) > 0.01:
+			if relative_difference < 0:
+				velocity.y = -speed
+			else:
+				velocity.y = speed
+		else:
+			velocity = Vector2.ZERO
 	else:
 		velocity = Vector2.ZERO
 
