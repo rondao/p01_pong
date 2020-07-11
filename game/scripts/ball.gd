@@ -25,6 +25,11 @@ var _spin := 0.0
 onready var _trail := $Trail as BallTrail
 var _trail_enabled := false
 
+onready var _audio_hit := $AudioHit as AudioStreamPlayer2D
+onready var _audio_power_hit := $AudioPowerHit as AudioStreamPlayer2D
+onready var _audio_wall_bounce := $AudioWallBounce as AudioStreamPlayer2D
+onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
+
 onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
 
@@ -54,10 +59,13 @@ func _physics_process(delta: float):
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
+			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
 			_collide_left_goal()
+			_audio_goal.play()
 		elif collider.name == "RightGoal":
 			_collide_right_goal()
+			_audio_goal.play()
 
 
 func _collide_paddles(collision: KinematicCollision2D):
@@ -95,8 +103,10 @@ func _collide_paddles(collision: KinematicCollision2D):
 
 	if _bonus_velocity > 1.0:
 		_show_trail()
+		_audio_power_hit.play()
 	else:
 		_hide_trail()
+		_audio_hit.play()
 
 
 func _collide_walls(collision: KinematicCollision2D):

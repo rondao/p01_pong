@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ball_power_hit.wav-a42f9d8539b3aed724d5c783f9055d0c.sample"
+
+[deps]
+
+source_file="res://game/audio/ball_power_hit.wav"
+dest_files=[ "res://.import/ball_power_hit.wav-a42f9d8539b3aed724d5c783f9055d0c.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
