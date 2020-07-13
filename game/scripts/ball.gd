@@ -30,6 +30,10 @@ onready var _audio_power_hit := $AudioPowerHit as AudioStreamPlayer2D
 onready var _audio_wall_bounce := $AudioWallBounce as AudioStreamPlayer2D
 onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
 
+onready var _animation := $Animation as AnimationPlayer
+
+const BALL_SPAWNING_ANIMATION := "ball_spawn"
+
 onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
 
@@ -135,6 +139,7 @@ func _reset(side: Vector2):
 	_spin = 0.0
 
 	_hide_trail()
+	_animation.play(BALL_SPAWNING_ANIMATION)
 
 
 func _show_trail():
