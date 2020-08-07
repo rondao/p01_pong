@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/FreeSansBold.otf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 192
+font_data = SubResource( 1 )
+
+[node name="MainMenu" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = 50.0
+margin_right = -50.0
+margin_bottom = -50.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="HBox" type="VBoxContainer" parent="."]
+margin_right = 1820.0
+margin_bottom = 980.0
+custom_constants/separation = 100
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GameName" type="Label" parent="HBox"]
+margin_right = 1820.0
+margin_bottom = 212.0
+custom_fonts/font = SubResource( 2 )
+text = "GAME_NAME"
+align = 1
+
+[node name="MainButtons" type="HBoxContainer" parent="HBox"]
+margin_top = 312.0
+margin_right = 1820.0
+margin_bottom = 980.0
+size_flags_vertical = 3
+custom_constants/separation = 50
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="PlayAgainstAI" type="Button" parent="HBox/MainButtons"]
+margin_right = 573.0
+margin_bottom = 668.0
+size_flags_horizontal = 3
+text = "PLAY_AGAINST_AI"
+
+[node name="PlayRanked" type="Button" parent="HBox/MainButtons"]
+margin_left = 623.0
+margin_right = 1196.0
+margin_bottom = 668.0
+size_flags_horizontal = 3
+text = "PLAY_RANKED"
+
+[node name="Rankings" type="Button" parent="HBox/MainButtons"]
+margin_left = 1246.0
+margin_right = 1820.0
+margin_bottom = 668.0
+size_flags_horizontal = 3
+text = "RANKINGS"
