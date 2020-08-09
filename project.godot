@@ -28,18 +28,12 @@ _global_script_classes=[ {
 "class": "Paddle",
 "language": "GDScript",
 "path": "res://game/scripts/paddle.gd"
-}, {
-"base": "Node",
-"class": "UserPreferences",
-"language": "GDScript",
-"path": "res://user_preferences.gd"
 } ]
 _global_script_class_icons={
 "BallTrail": "",
 "GitAPI": "",
 "Globals": "",
-"Paddle": "",
-"UserPreferences": ""
+"Paddle": ""
 }
 
 [application]
@@ -47,6 +41,10 @@ _global_script_class_icons={
 config/name="p01_pong"
 run/main_scene="res://game/scenes/main_menu.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+UserPreferences="*res://user_preferences.gd"
 
 [debug]
 

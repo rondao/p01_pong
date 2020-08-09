@@ -1,12 +1,9 @@
-extends Popup
+extends PopupPanel
 
 
-export(PackedScene) var PaddleSelection: PackedScene
-
-
-# warning-ignore:unused_argument
 func _paddle_selected(paddle_type: int):
-	pass
+	UserPreferences.save_paddle_type(paddle_type)
+	hide()
 
 
 func _on_Geometric_pressed():

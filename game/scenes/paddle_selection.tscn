@@ -76,3 +76,6 @@ margin_right = 1820.0
 margin_bottom = 738.0
 size_flags_horizontal = 3
 text = "DIFFERENTIAL"
+[connection signal="pressed" from="Margin/HBox/PaddleButtons/Geometric" to="." method="_on_Geometric_pressed"]
+[connection signal="pressed" from="Margin/HBox/PaddleButtons/Angular" to="." method="_on_Angular_pressed"]
+[connection signal="pressed" from="Margin/HBox/PaddleButtons/Differential" to="." method="_on_Differential_pressed"]

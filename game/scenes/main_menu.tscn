@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://game/scenes/main_menu.gd" type="Script" id=1]
 [ext_resource path="res://game/scenes/paddle_selection.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game/scenes/game.tscn" type="PackedScene" id=3]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://fonts/FreeSansBold.otf"
@@ -14,9 +15,12 @@ font_data = SubResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0.145098, 0.145098, 0.164706, 1 )
+script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": true
 }
+PaddleSelection = ExtResource( 2 )
+Game = ExtResource( 3 )
 
 [node name="Margin" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -25,11 +29,9 @@ custom_constants/margin_right = 50
 custom_constants/margin_top = 50
 custom_constants/margin_left = 50
 custom_constants/margin_bottom = 50
-script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-PaddleSelection = ExtResource( 2 )
 
 [node name="HBox" type="VBoxContainer" parent="Margin"]
 margin_left = 50.0
@@ -77,6 +79,6 @@ margin_right = 1820.0
 margin_bottom = 668.0
 size_flags_horizontal = 3
 text = "RANKINGS"
-[connection signal="pressed" from="Margin/HBox/MainButtons/PlayAgainstAI" to="Margin" method="_on_PlayAgainstAI_pressed"]
-[connection signal="pressed" from="Margin/HBox/MainButtons/PlayRanked" to="Margin" method="_on_PlayRanked_pressed"]
-[connection signal="pressed" from="Margin/HBox/MainButtons/Rankings" to="Margin" method="_on_Rankings_pressed"]
+[connection signal="pressed" from="Margin/HBox/MainButtons/PlayAgainstAI" to="." method="_on_PlayAgainstAI_pressed"]
+[connection signal="pressed" from="Margin/HBox/MainButtons/PlayRanked" to="." method="_on_PlayRanked_pressed"]
+[connection signal="pressed" from="Margin/HBox/MainButtons/Rankings" to="." method="_on_Rankings_pressed"]
