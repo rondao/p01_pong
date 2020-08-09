@@ -14,13 +14,11 @@ extents = Vector2( 10, 540 )
 
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 50, 540 )
-paddleType = 1
 
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1870, 540 )
 rotation = 3.14159
 player = 1
-paddleType = 2
 
 [node name="Walls" parent="." instance=ExtResource( 2 )]
 

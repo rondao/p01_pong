@@ -1,0 +1,84 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://game/scenes/main_menu.gd" type="Script" id=1]
+[ext_resource path="res://game/scenes/paddle_selection.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game/scenes/game.tscn" type="PackedScene" id=3]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/FreeSansBold.otf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 192
+font_data = SubResource( 1 )
+
+[node name="MainMenu" type="ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.145098, 0.145098, 0.164706, 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+PaddleSelection = ExtResource( 2 )
+Game = ExtResource( 3 )
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 50
+custom_constants/margin_top = 50
+custom_constants/margin_left = 50
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBox" type="VBoxContainer" parent="Margin"]
+margin_left = 50.0
+margin_top = 50.0
+margin_right = 1870.0
+margin_bottom = 1030.0
+custom_constants/separation = 100
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GameName" type="Label" parent="Margin/HBox"]
+margin_right = 1820.0
+margin_bottom = 212.0
+custom_fonts/font = SubResource( 2 )
+text = "GAME_NAME"
+align = 1
+
+[node name="MainButtons" type="HBoxContainer" parent="Margin/HBox"]
+margin_top = 312.0
+margin_right = 1820.0
+margin_bottom = 980.0
+size_flags_vertical = 3
+custom_constants/separation = 50
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="PlayAgainstAI" type="Button" parent="Margin/HBox/MainButtons"]
+margin_right = 573.0
+margin_bottom = 668.0
+size_flags_horizontal = 3
+text = "PLAY_AGAINST_AI"
+
+[node name="PlayRanked" type="Button" parent="Margin/HBox/MainButtons"]
+margin_left = 623.0
+margin_right = 1196.0
+margin_bottom = 668.0
+size_flags_horizontal = 3
+text = "PLAY_RANKED"
+
+[node name="Rankings" type="Button" parent="Margin/HBox/MainButtons"]
+margin_left = 1246.0
+margin_right = 1820.0
+margin_bottom = 668.0
+size_flags_horizontal = 3
+text = "RANKINGS"
+[connection signal="pressed" from="Margin/HBox/MainButtons/PlayAgainstAI" to="." method="_on_PlayAgainstAI_pressed"]
+[connection signal="pressed" from="Margin/HBox/MainButtons/PlayRanked" to="." method="_on_PlayRanked_pressed"]
+[connection signal="pressed" from="Margin/HBox/MainButtons/Rankings" to="." method="_on_Rankings_pressed"]

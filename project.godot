@@ -39,8 +39,12 @@ _global_script_class_icons={
 [application]
 
 config/name="p01_pong"
-run/main_scene="res://game/scenes/game.tscn"
+run/main_scene="res://game/scenes/main_menu.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+UserPreferences="*res://user_preferences.gd"
 
 [debug]
 
@@ -150,6 +154,11 @@ player_02_charge={
 
 pointing/emulate_touch_from_mouse=true
 
+[locale]
+
+locale_filter=[ 0, [  ] ]
+
 [rendering]
 
+environment/default_clear_color=Color( 0.14902, 0.172549, 0.231373, 1 )
 environment/default_environment="res://default_env.tres"

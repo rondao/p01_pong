@@ -4,13 +4,17 @@ class_name Paddle
 enum Player {HUMAN_01, HUMAN_02, NONE}
 export(Player) var player: int
 
-export(Globals.PaddleType) var paddleType: int
+var paddleType: int
 
 export(int) var speed: int
 var velocity := Vector2()
 
 var charge := 0.0
 var _max_charge := 0.5
+
+
+func _ready():
+	paddleType = UserPreferences.paddle_type
 
 
 func _physics_process(delta: float):
