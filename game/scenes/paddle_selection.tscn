@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://game/scenes/paddle_selection.gd" type="Script" id=1]
+[ext_resource path="res://game/scripts/paddle_selection.gd" type="Script" id=1]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://fonts/FreeSansBold.otf"
