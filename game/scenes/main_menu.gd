@@ -11,18 +11,21 @@ func _on_PlayAgainstAI_pressed():
 
 func _on_PlayRanked_pressed():
 	if UserPreferences.paddle_type == Globals.PaddleType.NONE:
-		var paddle_selection_popup := PaddleSelection.instance() as PopupPanel
-		get_tree().get_root().add_child(paddle_selection_popup)
+		yield(_popup_paddle_selection(), "popup_hide")
 
-		paddle_selection_popup.popup()
-# warning-ignore:return_value_discarded
-		paddle_selection_popup.connect("popup_hide", self, "_play_game")
-	else:
-		_play_game()
+	_play_game()
 
 
 func _on_Rankings_pressed():
 	pass # Replace with function body.
+
+
+func _popup_paddle_selection() -> PopupPanel:
+	var paddle_selection_popup := PaddleSelection.instance() as PopupPanel
+	get_tree().get_root().add_child(paddle_selection_popup)
+
+	paddle_selection_popup.popup()
+	return paddle_selection_popup
 
 
 func _play_game():
