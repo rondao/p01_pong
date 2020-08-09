@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://game/scenes/main_menu.gd" type="Script" id=1]
+[ext_resource path="res://game/scripts/main_menu.gd" type="Script" id=1]
 [ext_resource path="res://game/scenes/paddle_selection.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game/scenes/game.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game/scenes/mobile_input_selection.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://fonts/FreeSansBold.otf"
@@ -19,7 +20,8 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": true
 }
-PaddleSelection = ExtResource( 2 )
+PaddleTypeSelection = ExtResource( 2 )
+MobileInputSelection = ExtResource( 4 )
 Game = ExtResource( 3 )
 
 [node name="Margin" type="MarginContainer" parent="."]
