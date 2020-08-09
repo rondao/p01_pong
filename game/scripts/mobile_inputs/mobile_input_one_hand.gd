@@ -1,6 +1,6 @@
 extends Node2D
 
-## Mobile Input Scheme 03
+## Mobile Input Scheme one hand
 #
 # This scheme uses only one screen side,
 #  required for one device multiplayer.

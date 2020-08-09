@@ -1,6 +1,6 @@
 extends Node2D
 
-## Mobile Input Scheme 02
+## Mobile Input Scheme two hands
 #
 # This scheme relies on multi-touch, as both left
 #  and right side may be pressed simultaneously.
