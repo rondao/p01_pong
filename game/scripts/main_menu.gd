@@ -48,7 +48,8 @@ func _popup_mobile_input_selection() -> PopupPanel:
 	return mobile_input_selection_popup
 
 
-func _game_found(side: int):
+func _game_found(side: int, rng_seed: int):
+	seed(rng_seed)
 	_play_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
 
 

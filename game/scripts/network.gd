@@ -31,8 +31,8 @@ func request_ranked_game():
 	get_tree().network_peer = peer
 
 
-remote func configure_network_game(side: int):
-	emit_signal("game_found", side)
+remote func configure_network_game(side: int, rng_seed: int):
+	emit_signal("game_found", side, rng_seed)
 
 
 func _player_connected(_id):
@@ -41,8 +41,9 @@ func _player_connected(_id):
 	players_connected += 1
 	if players_connected == 2:
 		if get_tree().is_network_server():
-			rpc_id(get_tree().get_network_connected_peers()[0], "configure_network_game", Globals.Side.LEFT)
-			rpc_id(get_tree().get_network_connected_peers()[1], "configure_network_game", Globals.Side.RIGHT)
+			var rng_seed = randi()
+			rpc_id(get_tree().get_network_connected_peers()[0], "configure_network_game", Globals.Side.LEFT, rng_seed)
+			rpc_id(get_tree().get_network_connected_peers()[1], "configure_network_game", Globals.Side.RIGHT, rng_seed)
 
 
 func _player_disconnected(_id):
