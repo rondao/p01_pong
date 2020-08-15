@@ -4,7 +4,7 @@
 [ext_resource path="res://game/scenes/walls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game/scenes/ball.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/scripts/net_line.gd" type="Script" id=4]
-[ext_resource path="res://game/scripts/game.gd" type="Script" id=5]
+[ext_resource path="res://game/scripts/pong_game.gd" type="Script" id=5]
 [ext_resource path="res://game/scenes/mobile_inputs/mobile_input_one_hand.tscn" type="PackedScene" id=6]
 [ext_resource path="res://game/scenes/goal_sfx.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/scenes/score.tscn" type="PackedScene" id=8]
@@ -13,7 +13,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 540 )
 
-[node name="Game" type="Node2D"]
+[node name="PongGame" type="Node2D"]
 script = ExtResource( 5 )
 MobileInputOneHand = ExtResource( 6 )
 MobileInputTwoHands = ExtResource( 9 )
@@ -24,7 +24,6 @@ position = Vector2( 50, 540 )
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1870, 540 )
 rotation = 3.14159
-player = 1
 
 [node name="Walls" parent="." instance=ExtResource( 2 )]
 

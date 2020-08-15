@@ -74,7 +74,7 @@ func _physics_process(delta: float):
 
 func _collide_paddles(collision: KinematicCollision2D):
 	var collider := collision.collider as Paddle
-	match collider.paddleType:
+	match collider.paddle_type:
 		Globals.PaddleType.DIFFERENTIAL:
 			_bonus_velocity = bonus_velocity_minimum + abs(collider.velocity.y) * 0.0015
 			if collider.velocity.y:

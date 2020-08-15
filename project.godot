@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "Paddle",
 "language": "GDScript",
 "path": "res://game/scripts/paddle.gd"
+}, {
+"base": "Node2D",
+"class": "PongGame",
+"language": "GDScript",
+"path": "res://game/scripts/pong_game.gd"
 } ]
 _global_script_class_icons={
 "BallTrail": "",
 "GitAPI": "",
 "Globals": "",
-"Paddle": ""
+"Paddle": "",
+"PongGame": ""
 }
 
 [application]
@@ -45,6 +51,7 @@ config/icon="res://icon.png"
 [autoload]
 
 UserPreferences="*res://user_preferences.gd"
+Network="*res://game/scripts/network.gd"
 
 [debug]
 
