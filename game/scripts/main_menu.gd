@@ -8,18 +8,18 @@ export(PackedScene) var Game: PackedScene
 
 
 func _on_PlayAgainstAI_pressed():
-	_check_user_options_set()
+	yield(_check_user_options_set(), "completed")
 	_play_game(PongGame.GameType.LOCAL_AI)
 
 
 func _on_PlayRanked_pressed():
-	_check_user_options_set()
+	yield(_check_user_options_set(), "completed")
 	Network.connect("game_found", self, "_game_found")
 	Network.request_ranked_game()
 
 
 func _on_Rankings_pressed():
-	_check_user_options_set()
+	yield(_check_user_options_set(), "completed")
 	_play_game(PongGame.GameType.LOCAL_MULTIPLAYER)
 
 
@@ -31,6 +31,9 @@ func _check_user_options_set():
 	if UserPreferences.paddle_type == Globals.PaddleType.NONE:
 		yield(_popup_paddle_type_selection(), "popup_hide")
 
+	# Below yield is needed to guarantee this function returns a GDFunctionstate
+	#  which completes, otherwise it will crash when yielding to it.
+	yield(get_tree(), "idle_frame")
 
 func _popup_paddle_type_selection() -> PopupPanel:
 	var paddle_selection_popup := PaddleTypeSelection.instance() as PopupPanel
