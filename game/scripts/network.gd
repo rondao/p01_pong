@@ -61,3 +61,7 @@ func _connected_fail():
 
 func _server_disconnected():
 	print("_server_disconnected")
+
+
+func is_network_game() -> bool:
+	return get_tree().network_peer != null

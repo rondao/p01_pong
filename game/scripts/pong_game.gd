@@ -43,13 +43,11 @@ func _ready():
 
 
 func _configure_game_as_server():
-	_left_paddle.set_network_master(get_tree().get_network_connected_peers()[0])
 	_left_paddle.player_type = Paddle.PlayerType.NETWORK
 	_left_paddle.set_collision_layer(0)
 	_left_paddle.set_collision_mask(0)
 	_left_goal.set_collision_layer(0)
 	_left_goal.set_collision_mask(0)
-	_right_paddle.set_network_master(get_tree().get_network_connected_peers()[1])
 	_right_paddle.player_type = Paddle.PlayerType.NETWORK
 	_right_paddle.set_collision_layer(0)
 	_right_paddle.set_collision_mask(0)
@@ -60,18 +58,14 @@ func _configure_game_as_server():
 func _configure_game_as_network_multiplayer():
 	match _network_side:
 		Globals.Side.LEFT:
-			_left_paddle.set_network_master(get_tree().get_network_unique_id())
 			_left_paddle.player_type = Paddle.PlayerType.HUMAN_01
-			_right_paddle.set_network_master(get_tree().get_network_connected_peers()[1])
 			_right_paddle.player_type = Paddle.PlayerType.NETWORK
 			_right_paddle.set_collision_layer(0)
 			_right_paddle.set_collision_mask(0)
 			_right_goal.set_collision_layer(0)
 			_right_goal.set_collision_mask(0)
 		Globals.Side.RIGHT:
-			_right_paddle.set_network_master(get_tree().get_network_unique_id())
 			_right_paddle.player_type = Paddle.PlayerType.HUMAN_01
-			_left_paddle.set_network_master(get_tree().get_network_connected_peers()[1])
 			_left_paddle.player_type = Paddle.PlayerType.NETWORK
 			_left_paddle.set_collision_layer(0)
 			_left_paddle.set_collision_mask(0)
@@ -91,8 +85,9 @@ func _configure_game_as_local_ai():
 
 func _process(_delta: float):
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		if _left_paddle.is_network_master():
-			_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
-		if _right_paddle.is_network_master():
-			_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
+		match _network_side:
+			Globals.Side.LEFT:
+				_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
+			Globals.Side.RIGHT:
+				_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
 

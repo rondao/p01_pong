@@ -56,24 +56,30 @@ func _handle_input(player_number: String, delta: float):
 		velocity = Vector2.ZERO
 
 	if Input.is_action_pressed(player_number + "_charge"):
-		rpc_unreliable("_set_charge", (min(charge + delta, _max_charge)))
+		if Network.is_network_game():
+			rpc_unreliable("_set_charge", min(charge + delta, _max_charge))
+		_set_charge(min(charge + delta, _max_charge))
 		velocity.y *= 1.0 - charge
 	else:
-		rpc_unreliable("_set_charge", 0.0)
+		if Network.is_network_game():
+			rpc_unreliable("_set_charge", 0.0)
+		_set_charge(0.0)
 
 
 func _collide_ball():
-	rpc("_set_charge", 0.0)
+	if Network.is_network_game():
+		rpc("_set_charge", 0.0)
+	_set_charge(0.0)
 
 
 func _collide_walls():
 	velocity = Vector2.ZERO
 
 
-remotesync func _set_charge(charge_value: float):
+remote func _set_charge(charge_value: float):
 	charge = charge_value
 	modulate = Color(1.0, 1.0 - charge, 1.0 - charge)
 
 
-puppet func set_position(pos: Vector2):
+remote func set_position(pos: Vector2):
 	position = pos

@@ -59,15 +59,20 @@ func _physics_process(delta: float):
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
-			rpc("_ball_after_collision", position, _velocity, _bonus_velocity, _spin)
+			if Network.is_network_game():
+				rpc("_ball_after_collision", position, _velocity, _bonus_velocity, _spin)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
 			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
-			rpc("_collide_left_goal")
+			if Network.is_network_game():
+				rpc("_collide_left_goal")
+			_collide_left_goal()
 		elif collider.name == "RightGoal":
-			rpc("_collide_right_goal")
+			if Network.is_network_game():
+				rpc("_collide_right_goal")
+			_collide_right_goal() 	
 
 
 remote func _ball_after_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
@@ -130,14 +135,14 @@ func _collide_walls(collision: KinematicCollision2D):
 	_spin = -_spin
 
 
-remotesync func _collide_left_goal():
+remote func _collide_left_goal():
 	_spawn_goal_sfx(Globals.Side.LEFT)
 	_reset(Vector2.LEFT)
 	_audio_goal.play()
 	emit_signal("right_scored")
 
 
-remotesync func _collide_right_goal():
+remote func _collide_right_goal():
 	_spawn_goal_sfx(Globals.Side.RIGHT)
 	_reset(Vector2.RIGHT)
 	_audio_goal.play()
