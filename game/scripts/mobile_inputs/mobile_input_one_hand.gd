@@ -49,3 +49,7 @@ func _is_correct_side(x_position: float):
 			return x_position < _center.x
 		Globals.Side.RIGHT:
 			return x_position > _center.x
+
+
+func set_side(side: int):
+	self.side = side

@@ -17,7 +17,7 @@ var _network_side: int
 
 
 static func create_game(game_type: int, network_side: int = Globals.Side.NONE) -> PongGame:
-	var game := load("res://game/scenes/pong_game.tscn").instance() as PongGame
+	var game := (load("res://game/scenes/pong_game.tscn") as PackedScene).instance() as PongGame
 	game._game_type = game_type
 	game._network_side = network_side
 	return game
@@ -25,11 +25,17 @@ static func create_game(game_type: int, network_side: int = Globals.Side.NONE) -
 
 func _ready():
 	if OS.has_touchscreen_ui_hint():
+		var mobile_input
 		match UserPreferences.mobile_input:
 			Globals.MobileInput.ONE_HAND:
-				add_child(MobileInputOneHand.instance())
+				mobile_input = MobileInputOneHand.instance()
 			Globals.MobileInput.TWO_HANDS:
-				add_child(MobileInputTwoHands.instance())
+				mobile_input = MobileInputTwoHands.instance()
+
+		if Network.is_network_game():
+			mobile_input.set_side(_network_side)
+
+		add_child(mobile_input)
 
 	match _game_type:
 		GameType.SERVER:
