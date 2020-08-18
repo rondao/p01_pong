@@ -25,7 +25,6 @@ func save_paddle_type(new_paddle_type: int):
 	paddle_type = new_paddle_type
 
 	config.set_value(INPUT_SECTION, PADDLE_TYPE_KEY, paddle_type)
-# warning-ignore:return_value_discarded
 	config.save(USER_PREFERENCES_FILE_NAME)
 
 
@@ -33,5 +32,4 @@ func save_mobile_input(new_mobile_input: int):
 	mobile_input = new_mobile_input
 
 	config.set_value(INPUT_SECTION, MOBILE_INPUT_KEY, mobile_input)
-# warning-ignore:return_value_discarded
 	config.save(USER_PREFERENCES_FILE_NAME)

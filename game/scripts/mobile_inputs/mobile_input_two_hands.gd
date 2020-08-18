@@ -51,5 +51,5 @@ func _is_control_side(x_position: float):
 			return x_position > _center.x
 
 
-func set_side(side: int):
-	self.side = side
+func set_side(new_side: int):
+	self.side = new_side
