@@ -4,12 +4,18 @@ extends ColorRect
 export(PackedScene) var PaddleTypeSelection: PackedScene
 export(PackedScene) var MobileInputSelection: PackedScene
 
-export(PackedScene) var Game: PackedScene
+
+func _ready():
+	for argument in OS.get_cmdline_args():
+		if argument == "--server":
+			$Margin.queue_free()
+			Network.connect("game_found", self, "_game_found")
+			Network.start_server()
 
 
 func _on_PlayAgainstAI_pressed():
 	yield(_check_user_options_set(), "completed")
-	_play_game(PongGame.GameType.LOCAL_AI)
+	_start_game(PongGame.create_game(PongGame.GameType.LOCAL_AI))
 
 
 func _on_PlayRanked_pressed():
@@ -20,7 +26,7 @@ func _on_PlayRanked_pressed():
 
 func _on_Rankings_pressed():
 	yield(_check_user_options_set(), "completed")
-	_play_game(PongGame.GameType.LOCAL_MULTIPLAYER)
+	_start_game(PongGame.create_game(PongGame.GameType.LOCAL_MULTIPLAYER))
 
 
 func _check_user_options_set():
@@ -53,14 +59,17 @@ func _popup_mobile_input_selection() -> PopupPanel:
 
 func _game_found(side: int, rng_seed: int):
 	seed(rng_seed)
-	_play_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
+	if get_tree().is_network_server():
+		var game := PongGame.create_game(PongGame.GameType.SERVER, side)
+		yield(Network, "start_game")
+		_start_game(game)
+	else:
+		var game := PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
+		yield(Network, "start_game")
+		_start_game(game)
 
 
-func _play_game(game_type: int, network_side: int = Globals.Side.NONE):
-	var game := Game.instance() as PongGame
-	game.game_type = game_type
-	game.network_side = network_side
-
+func _start_game(game: PongGame):
 	get_tree().get_root().add_child(game)
 	get_tree().get_root().remove_child(self)
 

@@ -11,9 +11,17 @@ onready var _left_goal := $LeftGoal as PhysicsBody2D
 onready var _right_goal := $RightGoal as PhysicsBody2D
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER, SERVER}
-var game_type: int = GameType.NONE
+var _game_type: int = GameType.NONE
 
-var network_side: int
+var _network_side: int
+
+
+static func create_game(game_type: int, network_side: int = Globals.Side.NONE) -> PongGame:
+	var game := load("res://game/scenes/pong_game.tscn").instance() as PongGame
+	game._game_type = game_type
+	game._network_side = network_side
+	return game
+
 
 func _ready():
 	if OS.has_touchscreen_ui_hint():
@@ -23,7 +31,7 @@ func _ready():
 			Globals.MobileInput.TWO_HANDS:
 				add_child(MobileInputTwoHands.instance())
 
-	match game_type:
+	match _game_type:
 		GameType.SERVER:
 			_configure_game_as_server()
 		GameType.NETWORK_MULTIPLAYER:
@@ -37,12 +45,20 @@ func _ready():
 func _configure_game_as_server():
 	_left_paddle.set_network_master(get_tree().get_network_connected_peers()[0])
 	_left_paddle.player_type = Paddle.PlayerType.NETWORK
+	_left_paddle.set_collision_layer(0)
+	_left_paddle.set_collision_mask(0)
+	_left_goal.set_collision_layer(0)
+	_left_goal.set_collision_mask(0)
 	_right_paddle.set_network_master(get_tree().get_network_connected_peers()[1])
 	_right_paddle.player_type = Paddle.PlayerType.NETWORK
+	_right_paddle.set_collision_layer(0)
+	_right_paddle.set_collision_mask(0)
+	_right_goal.set_collision_layer(0)
+	_right_goal.set_collision_mask(0)
 
 
 func _configure_game_as_network_multiplayer():
-	match network_side:
+	match _network_side:
 		Globals.Side.LEFT:
 			_left_paddle.set_network_master(get_tree().get_network_unique_id())
 			_left_paddle.player_type = Paddle.PlayerType.HUMAN_01
@@ -74,7 +90,7 @@ func _configure_game_as_local_ai():
 
 
 func _process(_delta: float):
-	if game_type == GameType.NETWORK_MULTIPLAYER:
+	if _game_type == GameType.NETWORK_MULTIPLAYER:
 		if _left_paddle.is_network_master():
 			_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
 		if _right_paddle.is_network_master():

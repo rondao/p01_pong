@@ -1,6 +1,7 @@
 extends Node2D
 
 signal game_found()
+signal start_game()
 
 const SERVER_IP := "192.168.0.23"
 const SERVER_PORT := 40200
@@ -16,13 +17,11 @@ func _ready():
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 
-	for argument in OS.get_cmdline_args():
-		if argument == "--server":
-			get_node("/root/MainMenu").queue_free()
 
-			var peer := NetworkedMultiplayerENet.new()
-			peer.create_server(SERVER_PORT, MAX_PLAYERS)
-			get_tree().network_peer = peer
+func start_server():
+	var peer := NetworkedMultiplayerENet.new()
+	peer.create_server(SERVER_PORT, MAX_PLAYERS)
+	get_tree().network_peer = peer
 
 
 func request_ranked_game():
@@ -44,6 +43,8 @@ func _player_connected(_id):
 			var rng_seed = randi()
 			rpc_id(get_tree().get_network_connected_peers()[0], "configure_network_game", Globals.Side.LEFT, rng_seed)
 			rpc_id(get_tree().get_network_connected_peers()[1], "configure_network_game", Globals.Side.RIGHT, rng_seed)
+			configure_network_game(Globals.Side.NONE, rng_seed)
+		emit_signal("start_game")
 
 
 func _player_disconnected(_id):
