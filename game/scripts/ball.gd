@@ -59,22 +59,34 @@ func _physics_process(delta: float):
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
-			_spawn_collision_sfx()
+			if Network.is_network_game():
+				rpc("_ball_after_collision", position, _velocity, _bonus_velocity, _spin)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
 			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
+			if Network.is_network_game():
+				rpc("_collide_left_goal")
 			_collide_left_goal()
-			_audio_goal.play()
 		elif collider.name == "RightGoal":
-			_collide_right_goal()
-			_audio_goal.play()
+			if Network.is_network_game():
+				rpc("_collide_right_goal")
+			_collide_right_goal() 	
+
+
+remote func _ball_after_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
+	position = _new_position
+	_velocity = _new_velocity
+	_bonus_velocity = _new_bonus_velocity
+	_spin = _new_spin
+
+	_after_paddle_collision()
 
 
 func _collide_paddles(collision: KinematicCollision2D):
 	var collider := collision.collider as Paddle
-	match collider.paddleType:
+	match collider.paddle_type:
 		Globals.PaddleType.DIFFERENTIAL:
 			_bonus_velocity = bonus_velocity_minimum + abs(collider.velocity.y) * 0.0015
 			if collider.velocity.y:
@@ -105,12 +117,17 @@ func _collide_paddles(collision: KinematicCollision2D):
 	_bonus_velocity += collider.charge
 	_spin *= 1.0 + collider.charge
 
+	_after_paddle_collision()
+
+
+func _after_paddle_collision():
 	if _bonus_velocity > 1.0:
 		_show_trail()
 		_audio_power_hit.play()
 	else:
 		_hide_trail()
 		_audio_hit.play()
+	_spawn_collision_sfx()
 
 
 func _collide_walls(collision: KinematicCollision2D):
@@ -118,15 +135,17 @@ func _collide_walls(collision: KinematicCollision2D):
 	_spin = -_spin
 
 
-func _collide_left_goal():
+remote func _collide_left_goal():
 	_spawn_goal_sfx(Globals.Side.LEFT)
 	_reset(Vector2.LEFT)
+	_audio_goal.play()
 	emit_signal("right_scored")
 
 
-func _collide_right_goal():
+remote func _collide_right_goal():
 	_spawn_goal_sfx(Globals.Side.RIGHT)
 	_reset(Vector2.RIGHT)
+	_audio_goal.play()
 	emit_signal("left_scored")
 
 

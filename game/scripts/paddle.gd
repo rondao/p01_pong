@@ -1,10 +1,10 @@
 extends KinematicBody2D
 class_name Paddle
 
-enum Player {HUMAN_01, HUMAN_02, NONE}
-export(Player) var player: int
+enum PlayerType {NONE, AI, HUMAN_01, HUMAN_02, NETWORK}
+var player_type: int = PlayerType.NONE
 
-var paddleType: int
+var paddle_type: int
 
 export(int) var speed: int
 var velocity := Vector2()
@@ -14,23 +14,26 @@ var _max_charge := 0.5
 
 
 func _ready():
-	paddleType = UserPreferences.paddle_type
+	paddle_type = UserPreferences.paddle_type
+
+
+func _process(delta: float):
+	match player_type:
+		PlayerType.HUMAN_01:
+			_handle_input("player_01", delta)
+		PlayerType.HUMAN_02:
+			_handle_input("player_02", delta)
 
 
 func _physics_process(delta: float):
-	match player:
-		Player.HUMAN_01:
-			_handle_input("player_01", delta)
-		Player.HUMAN_02:
-			_handle_input("player_02", delta)
-
-	var collision := move_and_collide(velocity * delta)
-	if collision:
-		var collider := collision.collider as Node
-		if collider.is_in_group("ball"):
-			_collide_ball()
-		elif collider.is_in_group("walls"):
-			_collide_walls()
+	if player_type == PlayerType.HUMAN_01 or player_type == PlayerType.HUMAN_02:
+		var collision := move_and_collide(velocity * delta)
+		if collision:
+			var collider := collision.collider as Node
+			if collider.is_in_group("ball"):
+				_collide_ball()
+			elif collider.is_in_group("walls"):
+				_collide_walls()
 
 
 func _handle_input(player_number: String, delta: float):
@@ -53,13 +56,19 @@ func _handle_input(player_number: String, delta: float):
 		velocity = Vector2.ZERO
 
 	if Input.is_action_pressed(player_number + "_charge"):
+		if Network.is_network_game():
+			rpc_unreliable("_set_charge", min(charge + delta, _max_charge))
 		_set_charge(min(charge + delta, _max_charge))
 		velocity.y *= 1.0 - charge
 	else:
+		if Network.is_network_game():
+			rpc_unreliable("_set_charge", 0.0)
 		_set_charge(0.0)
 
 
 func _collide_ball():
+	if Network.is_network_game():
+		rpc("_set_charge", 0.0)
 	_set_charge(0.0)
 
 
@@ -67,6 +76,10 @@ func _collide_walls():
 	velocity = Vector2.ZERO
 
 
-func _set_charge(charge_value: float):
+remote func _set_charge(charge_value: float):
 	charge = charge_value
 	modulate = Color(1.0, 1.0 - charge, 1.0 - charge)
+
+
+remote func set_position(pos: Vector2):
+	position = pos
