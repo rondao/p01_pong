@@ -1,7 +1,6 @@
 extends Node2D
 
 signal game_found()
-signal start_game()
 
 const SERVER_IP := "192.168.0.23"
 const SERVER_PORT := 40200
@@ -19,14 +18,14 @@ func _ready():
 
 
 func start_server():
-	var peer := NetworkedMultiplayerENet.new()
-	peer.create_server(SERVER_PORT, MAX_PLAYERS)
+	var peer = WebSocketServer.new()
+	peer.listen(SERVER_PORT, PoolStringArray(), true)
 	get_tree().network_peer = peer
 
 
 func request_ranked_game():
-	var peer := NetworkedMultiplayerENet.new()
-	peer.create_client(SERVER_IP, SERVER_PORT)
+	var peer = WebSocketClient.new()
+	peer.connect_to_url("ws://" + SERVER_IP + ":" + str(SERVER_PORT), PoolStringArray(), true)
 	get_tree().network_peer = peer
 
 
@@ -44,7 +43,6 @@ func _player_connected(_id):
 			rpc_id(get_tree().get_network_connected_peers()[0], "configure_network_game", Globals.Side.LEFT, rng_seed)
 			rpc_id(get_tree().get_network_connected_peers()[1], "configure_network_game", Globals.Side.RIGHT, rng_seed)
 			configure_network_game(Globals.Side.NONE, rng_seed)
-		emit_signal("start_game")
 
 
 func _player_disconnected(_id):
