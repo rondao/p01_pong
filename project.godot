@@ -149,10 +149,6 @@ player_02_charge={
  ]
 }
 
-[input_devices]
-
-pointing/emulate_touch_from_mouse=true
-
 [locale]
 
 locale_filter=[ 0, [  ] ]
