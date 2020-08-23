@@ -2,7 +2,7 @@ extends Node2D
 
 signal game_found()
 
-const SERVER_IP := "192.168.0.23"
+const SERVER_IP := "34.121.135.131"
 const SERVER_PORT := 40200
 const MAX_PLAYERS := 2
 
