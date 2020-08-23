@@ -61,11 +61,9 @@ func _game_found(side: int, rng_seed: int):
 	seed(rng_seed)
 	if get_tree().is_network_server():
 		var game := PongGame.create_game(PongGame.GameType.SERVER, side)
-		yield(Network, "start_game")
 		_start_game(game)
 	else:
 		var game := PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
-		yield(Network, "start_game")
 		_start_game(game)
 
 
