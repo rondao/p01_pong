@@ -1,6 +1,9 @@
 extends Node2D
 class_name PongGame
 
+signal left_scored()
+signal right_scored()
+
 export(PackedScene) var MobileInputOneHand: PackedScene
 export(PackedScene) var MobileInputTwoHands: PackedScene
 
@@ -14,6 +17,9 @@ enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER, SERVER}
 var _game_type: int = GameType.NONE
 
 var _network_side: int
+
+var _left_score := 0
+var _right_score := 0
 
 
 static func create_game(game_type: int, network_side: int = Globals.Side.NONE) -> PongGame:
@@ -97,3 +103,12 @@ func _process(_delta: float):
 			Globals.Side.RIGHT:
 				_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
 
+
+func _on_Ball_collided_goal(side: int):
+	match side:
+		Globals.Side.LEFT:
+			_left_score += 1
+			emit_signal("left_scored", _left_score)
+		Globals.Side.RIGHT:
+			_right_score += 1
+			emit_signal("right_scored", _right_score)
