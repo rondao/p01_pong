@@ -11,6 +11,7 @@ export_presets.cfg
 .mono/
 data_*/
 
-# APK build files
+# APK/EXE build files
 p01_pong.apk
+p01_pong.exe
 p01_pong.pck
