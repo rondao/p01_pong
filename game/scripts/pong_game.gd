@@ -107,11 +107,11 @@ func _process(_delta: float):
 func _on_Ball_collided_goal(side: int):
 	match side:
 		Globals.Side.LEFT:
-			_left_score += 1
-			emit_signal("left_scored", _left_score)
-		Globals.Side.RIGHT:
 			_right_score += 1
 			emit_signal("right_scored", _right_score)
+		Globals.Side.RIGHT:
+			_left_score += 1
+			emit_signal("left_scored", _left_score)
 
 	if _left_score == goals_to_win:
 		match player_side:

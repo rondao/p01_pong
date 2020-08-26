@@ -183,12 +183,12 @@ func _spawn_goal_sfx(side : int):
 
 
 func _on_PongGame_left_scored(_score: int):
-	_spawn_goal_sfx(Globals.Side.LEFT)
-	_audio_goal.play()
-	_reset(Vector2.LEFT)
-
-
-func _on_PongGame_right_scored(_score: int):
 	_spawn_goal_sfx(Globals.Side.RIGHT)
 	_audio_goal.play()
 	_reset(Vector2.RIGHT)
+
+
+func _on_PongGame_right_scored(_score: int):
+	_spawn_goal_sfx(Globals.Side.LEFT)
+	_audio_goal.play()
+	_reset(Vector2.LEFT)
