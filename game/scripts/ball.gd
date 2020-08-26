@@ -1,7 +1,6 @@
 extends KinematicBody2D
 
-signal right_scored()
-signal left_scored()
+signal collided_goal()
 
 export(PackedScene) var CollisionSfx: PackedScene
 export(PackedScene) var GoalSfx: PackedScene
@@ -67,12 +66,16 @@ func _physics_process(delta: float):
 			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
 			if Network.is_network_game():
-				rpc("_collide_left_goal")
-			_collide_left_goal()
+				rpc("_collided_goal", Globals.Side.LEFT)
+			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
 			if Network.is_network_game():
-				rpc("_collide_right_goal")
-			_collide_right_goal() 	
+				rpc("_collided_goal", Globals.Side.RIGHT)
+			_collided_goal(Globals.Side.RIGHT)
+
+
+remote func _collided_goal(side: int):
+	emit_signal("collided_goal", side)
 
 
 remote func _ball_after_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
@@ -135,20 +138,6 @@ func _collide_walls(collision: KinematicCollision2D):
 	_spin = -_spin
 
 
-remote func _collide_left_goal():
-	_spawn_goal_sfx(Globals.Side.LEFT)
-	_reset(Vector2.LEFT)
-	_audio_goal.play()
-	emit_signal("right_scored")
-
-
-remote func _collide_right_goal():
-	_spawn_goal_sfx(Globals.Side.RIGHT)
-	_reset(Vector2.RIGHT)
-	_audio_goal.play()
-	emit_signal("left_scored")
-
-
 func _reset(side: Vector2):
 	position = _center;
 	
@@ -191,3 +180,15 @@ func _spawn_goal_sfx(side : int):
 			sfx.rotation = PI
 
 	get_parent().add_child(sfx)
+
+
+func _on_PongGame_left_scored(_score: int):
+	_spawn_goal_sfx(Globals.Side.RIGHT)
+	_audio_goal.play()
+	_reset(Vector2.RIGHT)
+
+
+func _on_PongGame_right_scored(_score: int):
+	_spawn_goal_sfx(Globals.Side.LEFT)
+	_audio_goal.play()
+	_reset(Vector2.LEFT)

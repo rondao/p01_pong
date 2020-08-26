@@ -1,22 +1,18 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://game/scenes/paddle.tscn" type="PackedScene" id=1]
 [ext_resource path="res://game/scenes/walls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game/scenes/ball.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/scripts/net_line.gd" type="Script" id=4]
 [ext_resource path="res://game/scripts/pong_game.gd" type="Script" id=5]
-[ext_resource path="res://game/scenes/mobile_inputs/mobile_input_one_hand.tscn" type="PackedScene" id=6]
 [ext_resource path="res://game/scenes/goal_sfx.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/scenes/score.tscn" type="PackedScene" id=8]
-[ext_resource path="res://game/scenes/mobile_inputs/mobile_input_two_hands.tscn" type="PackedScene" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 540 )
 
 [node name="PongGame" type="Node2D"]
 script = ExtResource( 5 )
-MobileInputOneHand = ExtResource( 6 )
-MobileInputTwoHands = ExtResource( 9 )
 
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 50, 540 )
@@ -80,5 +76,8 @@ anchor_bottom = 0.0
 margin_left = 133.0
 margin_right = 216.0
 margin_bottom = 165.0
-[connection signal="left_scored" from="Ball" to="Score/HBoxContainer/LeftScore" method="_on_Ball_left_scored"]
-[connection signal="right_scored" from="Ball" to="Score/HBoxContainer/RightScore" method="_on_Ball_right_scored"]
+[connection signal="left_scored" from="." to="Score/HBoxContainer/LeftScore" method="_on_PongGame_left_scored"]
+[connection signal="left_scored" from="." to="Ball" method="_on_PongGame_left_scored"]
+[connection signal="right_scored" from="." to="Score/HBoxContainer/RightScore" method="_on_PongGame_right_scored"]
+[connection signal="right_scored" from="." to="Ball" method="_on_PongGame_right_scored"]
+[connection signal="collided_goal" from="Ball" to="." method="_on_Ball_collided_goal"]

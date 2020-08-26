@@ -1,15 +1,15 @@
 extends ColorRect
 
 
-export(PackedScene) var PaddleTypeSelection: PackedScene
-export(PackedScene) var MobileInputSelection: PackedScene
+onready var PaddleTypeSelection := preload("res://game/scenes/paddle_selection.tscn")
+onready var MobileInputSelection := preload("res://game/scenes/mobile_input_selection.tscn")
 
 
 func _ready():
 	for argument in OS.get_cmdline_args():
 		if argument == "--server":
 			$Margin.queue_free()
-			Network.connect("game_found", self, "_game_found")
+			Network.connect("game_found", self, "_on_Network_game_found")
 			Network.start_server()
 
 
@@ -20,13 +20,23 @@ func _on_PlayAgainstAI_pressed():
 
 func _on_PlayRanked_pressed():
 	yield(_check_user_options_set(), "completed")
-	Network.connect("game_found", self, "_game_found")
+	Network.connect("game_found", self, "_on_Network_game_found")
 	Network.request_ranked_game()
 
 
 func _on_Rankings_pressed():
 	yield(_check_user_options_set(), "completed")
 	_start_game(PongGame.create_game(PongGame.GameType.LOCAL_MULTIPLAYER))
+
+
+func _on_Network_game_found(side: int, rng_seed: int):
+	seed(rng_seed)
+	if get_tree().is_network_server():
+		var game := PongGame.create_game(PongGame.GameType.SERVER, side)
+		_start_game(game)
+	else:
+		var game := PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
+		_start_game(game)
 
 
 func _check_user_options_set():
@@ -40,6 +50,7 @@ func _check_user_options_set():
 	# Below yield is needed to guarantee this function returns a GDFunctionstate
 	#  which completes, otherwise it will crash when yielding to it.
 	yield(get_tree(), "idle_frame")
+
 
 func _popup_paddle_type_selection() -> PopupPanel:
 	var paddle_selection_popup := PaddleTypeSelection.instance() as PopupPanel
@@ -55,16 +66,6 @@ func _popup_mobile_input_selection() -> PopupPanel:
 
 	mobile_input_selection_popup.popup()
 	return mobile_input_selection_popup
-
-
-func _game_found(side: int, rng_seed: int):
-	seed(rng_seed)
-	if get_tree().is_network_server():
-		var game := PongGame.create_game(PongGame.GameType.SERVER, side)
-		_start_game(game)
-	else:
-		var game := PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
-		_start_game(game)
 
 
 func _start_game(game: PongGame):
