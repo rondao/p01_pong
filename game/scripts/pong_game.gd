@@ -116,16 +116,16 @@ func _on_Ball_collided_goal(side: int):
 	if _left_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
-				_popup_end_game(true)
+				_popup_end_game(true, Globals.Side.LEFT)
 			Globals.Side.RIGHT:
-				_popup_end_game(false)
+				_popup_end_game(false, Globals.Side.LEFT)
 		_end_game()
 	elif _right_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
-				_popup_end_game(false)
+				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
-				_popup_end_game(true)
+				_popup_end_game(true, Globals.Side.RIGHT)
 		_end_game()
 
 
@@ -133,8 +133,14 @@ func _end_game():
 	get_tree().set_pause(true)
 
 
-func _popup_end_game(_won: bool):
-	var end_game_popup := (load("res://game/scenes/end_game_popup.tscn") as PackedScene).instance() as PopupPanel
+func _popup_end_game(won: bool, side: int):
+	var end_game_popup : PopupPanel
+
+	if _game_type == GameType.LOCAL_MULTIPLAYER:
+		end_game_popup = EndGamePopup.create_popup_with_side_victory(side)
+	else:
+		end_game_popup = EndGamePopup.create_popup(won)
+
 	get_tree().get_root().add_child(end_game_popup)
 
 	end_game_popup.connect("hide", self, "_on_EndGamePopup_hide")
