@@ -1,6 +1,7 @@
 extends Node2D
 
 signal game_found()
+signal search_failed()
 
 const SERVER_IP := "34.121.135.131"
 const SERVER_PORT := 40200
@@ -25,7 +26,8 @@ func start_server():
 
 func request_ranked_game():
 	var peer = WebSocketClient.new()
-	peer.connect_to_url("ws://" + SERVER_IP + ":" + str(SERVER_PORT), PoolStringArray(), true)
+	if OK != peer.connect_to_url("ws://" + SERVER_IP + ":" + str(SERVER_PORT), PoolStringArray(), true):
+		emit_signal("search_failed")
 	get_tree().network_peer = peer
 
 
@@ -46,6 +48,7 @@ func _player_connected(_id):
 
 
 func _player_disconnected(_id):
+	players_connected -= 1
 	print("_player_disconnected: " + str(_id))
 
 
@@ -54,7 +57,7 @@ func _connected_ok():
 
 
 func _connected_fail():
-	print("_connected_fail")
+	emit_signal("search_failed")
 
 
 func _server_disconnected():

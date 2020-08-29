@@ -18,7 +18,10 @@ func _on_PlayAgainstAI_pressed():
 
 func _on_PlayRanked_pressed():
 	yield(_check_user_options_set(), "completed")
-	connect("game_started", _popup_searching_game(), "queue_free")
+
+	var searching_popup := _popup_searching_game()
+	connect("game_started", searching_popup, "queue_free")
+	Network.connect("search_failed", searching_popup, "queue_free")
 
 	Network.connect("game_found", self, "_on_Network_game_found")
 	Network.request_ranked_game()
