@@ -7,7 +7,6 @@ func _ready():
 	for argument in OS.get_cmdline_args():
 		if argument == "--server":
 			$Margin.queue_free()
-			Network.connect("game_found", self, "_on_Network_game_found")
 			Network.start_server()
 
 
@@ -34,12 +33,7 @@ func _on_Rankings_pressed():
 
 func _on_Network_game_found(side: int, rng_seed: int):
 	seed(rng_seed)
-	if get_tree().is_network_server():
-		var game := PongGame.create_game(PongGame.GameType.SERVER, side)
-		_start_game(game)
-	else:
-		var game := PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
-		_start_game(game)
+	_start_game(PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side))
 
 
 func _check_user_options_set():

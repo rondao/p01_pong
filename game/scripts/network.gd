@@ -23,6 +23,8 @@ func start_server():
 	peer.listen(SERVER_PORT, PoolStringArray(), true)
 	get_tree().network_peer = peer
 
+	connect("game_found", self, "_on_Server_game_found")
+
 
 func request_ranked_game():
 	var peer = WebSocketClient.new()
@@ -62,6 +64,16 @@ func _connected_fail():
 
 func _server_disconnected():
 	print("_server_disconnected")
+
+
+func _on_Server_game_found(side: int, rng_seed: int):
+	seed(rng_seed)
+	get_tree().get_root().add_child(PongGame.create_game(PongGame.GameType.SERVER, side))
+
+
+func disconnect_multiplayer_game():
+	players_connected = 0
+	(get_tree().network_peer as WebSocketClient).disconnect_from_host()
 
 
 func is_network_game() -> bool:
