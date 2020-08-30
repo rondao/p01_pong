@@ -1,15 +1,12 @@
 extends ColorRect
 
-
-onready var PaddleTypeSelection := preload("res://game/scenes/paddle_selection.tscn")
-onready var MobileInputSelection := preload("res://game/scenes/mobile_input_selection.tscn")
+signal game_started()
 
 
 func _ready():
 	for argument in OS.get_cmdline_args():
 		if argument == "--server":
 			$Margin.queue_free()
-			Network.connect("game_found", self, "_on_Network_game_found")
 			Network.start_server()
 
 
@@ -20,6 +17,11 @@ func _on_PlayAgainstAI_pressed():
 
 func _on_PlayRanked_pressed():
 	yield(_check_user_options_set(), "completed")
+
+	var searching_popup := _popup_searching_game()
+	connect("game_started", searching_popup, "queue_free")
+	Network.connect("search_failed", searching_popup, "queue_free")
+
 	Network.connect("game_found", self, "_on_Network_game_found")
 	Network.request_ranked_game()
 
@@ -31,12 +33,7 @@ func _on_Rankings_pressed():
 
 func _on_Network_game_found(side: int, rng_seed: int):
 	seed(rng_seed)
-	if get_tree().is_network_server():
-		var game := PongGame.create_game(PongGame.GameType.SERVER, side)
-		_start_game(game)
-	else:
-		var game := PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side)
-		_start_game(game)
+	_start_game(PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side))
 
 
 func _check_user_options_set():
@@ -53,7 +50,7 @@ func _check_user_options_set():
 
 
 func _popup_paddle_type_selection() -> PopupPanel:
-	var paddle_selection_popup := PaddleTypeSelection.instance() as PopupPanel
+	var paddle_selection_popup := (load("res://game/scenes/paddle_selection.tscn") as PackedScene).instance() as PopupPanel
 	get_tree().get_root().add_child(paddle_selection_popup)
 
 	paddle_selection_popup.popup()
@@ -61,14 +58,24 @@ func _popup_paddle_type_selection() -> PopupPanel:
 
 
 func _popup_mobile_input_selection() -> PopupPanel:
-	var mobile_input_selection_popup := MobileInputSelection.instance() as PopupPanel
+	var mobile_input_selection_popup := (load("res://game/scenes/mobile_input_selection.tscn") as PackedScene).instance() as PopupPanel
 	get_tree().get_root().add_child(mobile_input_selection_popup)
 
 	mobile_input_selection_popup.popup()
 	return mobile_input_selection_popup
 
 
+func _popup_searching_game() -> PopupPanel:
+	var loading_popup := (load("res://game/scenes/searching_game.tscn") as PackedScene).instance() as PopupPanel
+	get_tree().get_root().add_child(loading_popup)
+
+	loading_popup.popup()
+	return loading_popup
+
+
 func _start_game(game: PongGame):
+	emit_signal("game_started")
+
 	get_tree().get_root().add_child(game)
 	get_tree().get_root().remove_child(self)
 

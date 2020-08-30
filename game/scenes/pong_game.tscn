@@ -76,8 +76,8 @@ anchor_bottom = 0.0
 margin_left = 133.0
 margin_right = 216.0
 margin_bottom = 165.0
-[connection signal="left_scored" from="." to="Score/HBoxContainer/LeftScore" method="_on_PongGame_left_scored"]
 [connection signal="left_scored" from="." to="Ball" method="_on_PongGame_left_scored"]
-[connection signal="right_scored" from="." to="Score/HBoxContainer/RightScore" method="_on_PongGame_right_scored"]
+[connection signal="left_scored" from="." to="Score/HBoxContainer/LeftScore" method="_on_PongGame_left_scored"]
 [connection signal="right_scored" from="." to="Ball" method="_on_PongGame_right_scored"]
+[connection signal="right_scored" from="." to="Score/HBoxContainer/RightScore" method="_on_PongGame_right_scored"]
 [connection signal="collided_goal" from="Ball" to="." method="_on_Ball_collided_goal"]

@@ -55,6 +55,9 @@ func _ready():
 
 
 func _configure_game_as_server():
+	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
+	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
+
 	_left_paddle.player_type = Paddle.PlayerType.NETWORK
 	_left_paddle.set_collision_layer(0)
 	_left_paddle.set_collision_mask(0)
@@ -68,6 +71,9 @@ func _configure_game_as_server():
 
 
 func _configure_game_as_network_multiplayer():
+	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
+	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
+
 	match player_side:
 		Globals.Side.LEFT:
 			_left_paddle.player_type = Paddle.PlayerType.HUMAN_01
@@ -119,23 +125,20 @@ func _on_Ball_collided_goal(side: int):
 				_popup_end_game(true, Globals.Side.LEFT)
 			Globals.Side.RIGHT:
 				_popup_end_game(false, Globals.Side.LEFT)
-		_end_game()
 	elif _right_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
 				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
 				_popup_end_game(true, Globals.Side.RIGHT)
-		_end_game()
-
-
-func _end_game():
-	get_tree().set_pause(true)
 
 
 func _popup_end_game(won: bool, side: int):
-	var end_game_popup : PopupPanel
+	if _game_type == GameType.NETWORK_MULTIPLAYER:
+		get_tree().disconnect("network_peer_disconnected", self, "_on_Network_disconnected")
+		get_tree().disconnect("server_disconnected", self, "_on_Network_disconnected")
 
+	var end_game_popup : PopupPanel
 	if _game_type == GameType.LOCAL_MULTIPLAYER:
 		end_game_popup = EndGamePopup.create_popup_with_side_victory(side)
 	else:
@@ -146,9 +149,25 @@ func _popup_end_game(won: bool, side: int):
 	end_game_popup.connect("hide", self, "_on_EndGamePopup_hide")
 	end_game_popup.popup()
 
+	get_tree().set_pause(true)
+
+
+func _on_Network_disconnected(_peer_id := 0):
+	if _game_type == GameType.SERVER:
+		self.queue_free()
+	else:
+		_end_game()
+
 
 func _on_EndGamePopup_hide():
+	_end_game()
+
+
+func _end_game():
 	get_tree().set_pause(false)
+
+	if _game_type == GameType.NETWORK_MULTIPLAYER:
+		Network.disconnect_multiplayer_game()
 
 	var main_menu := (load("res://game/scenes/main_menu.tscn") as PackedScene).instance()
 
