@@ -134,8 +134,11 @@ func _on_Ball_collided_goal(side: int):
 
 
 func _popup_end_game(won: bool, side: int):
-	var end_game_popup : PopupPanel
+	if _game_type == GameType.NETWORK_MULTIPLAYER:
+		get_tree().disconnect("network_peer_disconnected", self, "_on_Network_disconnected")
+		get_tree().disconnect("server_disconnected", self, "_on_Network_disconnected")
 
+	var end_game_popup : PopupPanel
 	if _game_type == GameType.LOCAL_MULTIPLAYER:
 		end_game_popup = EndGamePopup.create_popup_with_side_victory(side)
 	else:
@@ -152,8 +155,7 @@ func _popup_end_game(won: bool, side: int):
 func _on_Network_disconnected(_peer_id := 0):
 	if _game_type == GameType.SERVER:
 		self.queue_free()
-	elif _game_type == GameType.NETWORK_MULTIPLAYER:
-		Network.disconnect_multiplayer_game()
+	else:
 		_end_game()
 
 
@@ -163,6 +165,9 @@ func _on_EndGamePopup_hide():
 
 func _end_game():
 	get_tree().set_pause(false)
+
+	if _game_type == GameType.NETWORK_MULTIPLAYER:
+		Network.disconnect_multiplayer_game()
 
 	var main_menu := (load("res://game/scenes/main_menu.tscn") as PackedScene).instance()
 
