@@ -38,7 +38,7 @@ func _ready():
 			Globals.MobileInput.TWO_HANDS:
 				mobile_input = (load("res://game/scenes/mobile_inputs/mobile_input_two_hands.tscn") as PackedScene).instance()
 
-		if Network.is_network_game():
+		if get_tree().network_peer != null:
 			mobile_input.set_side(player_side)
 
 		add_child(mobile_input)
@@ -73,6 +73,7 @@ func _configure_game_as_server():
 func _configure_game_as_network_multiplayer():
 	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
 	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
+	GameServer._socket.connect("received_match_state", self, "_on_NakamaSocket_received_match_state")
 
 	match player_side:
 		Globals.Side.LEFT:
@@ -101,13 +102,25 @@ func _configure_game_as_local_ai():
 	_right_paddle.player_type = Paddle.PlayerType.AI
 
 
-func _process(_delta: float):
+func _on_Timer_timeout():
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
 		match player_side:
 			Globals.Side.LEFT:
-				_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
+				#_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
+				GameServer.send_paddle_position(_left_paddle.position)
 			Globals.Side.RIGHT:
-				_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
+				#_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
+				GameServer.send_paddle_position(_right_paddle.position)
+
+
+func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
+	match match_state.op_code:
+		GameServer.OpCodes.SET_PADDLE_POSITION:
+			match player_side:
+				Globals.Side.LEFT:
+					_right_paddle.set_position(str2var(match_state.data))
+				Globals.Side.RIGHT:
+					_left_paddle.set_position(str2var(match_state.data))
 
 
 func _on_Ball_collided_goal(side: int):
@@ -167,7 +180,7 @@ func _end_game():
 	get_tree().set_pause(false)
 
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		Network.disconnect_multiplayer_game()
+		(get_tree().network_peer as WebSocketClient).disconnect_from_host()
 
 	var main_menu := (load("res://game/scenes/main_menu.tscn") as PackedScene).instance()
 

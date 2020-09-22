@@ -134,9 +134,10 @@ config/icon="res://icon.png"
 
 [autoload]
 
-UserPreferences="*res://user_preferences.gd"
-Network="*res://game/scripts/network.gd"
 Nakama="*res://addons/com.heroiclabs.nakama/Nakama.gd"
+Network="*res://game/scripts/network.gd"
+GameServer="*res://game/scripts/game_server.gd"
+UserPreferences="*res://user_preferences.gd"
 
 [debug]
 
@@ -151,7 +152,6 @@ gdscript/warnings/unsafe_call_argument=true
 
 window/size/width=1920
 window/size/height=1080
-window/size/borderless=true
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
 

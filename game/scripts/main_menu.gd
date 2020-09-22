@@ -22,8 +22,11 @@ func _on_PlayRanked_pressed():
 	connect("game_started", searching_popup, "queue_free")
 	Network.connect("search_failed", searching_popup, "queue_free")
 
-	Network.connect("game_found", self, "_on_Network_game_found")
-	Network.request_ranked_game()
+	#Network.connect("game_found", self, "_on_Network_game_found")
+	#Network.request_ranked_game()
+
+	GameServer.connect("game_found", self, "_on_Network_game_found")
+	GameServer.request_matchmaking()
 
 
 func _on_Rankings_pressed():
