@@ -52,6 +52,10 @@ func connect_to_server_async():
 	print("=== RONDAO : DEBUG === connect_to_server_async")
 
 
+func is_network_game():
+	return _socket.is_connected_to_host()
+
+
 func request_matchmaking():
 	var matchmaker_ticket: NakamaRTAPI.MatchmakerTicket = \
 		yield(_socket.add_matchmaker_async("*", 2, 2), "completed")
@@ -97,4 +101,17 @@ func _check_game_ready():
 
 
 func send_paddle_position(position: Vector2):
-	_socket.send_match_state_async(_match_id, OpCodes.SET_PADDLE_POSITION, var2str(position))
+	_socket.send_match_state_async(_match_id,
+									OpCodes.SET_PADDLE_POSITION,
+									var2str(position))
+
+func send_ball_collided(position: Vector2, velocity: Vector2, bonus_velocity: float, spin: float):
+	print("sending ball collided: " + str(position))
+	_socket.send_match_state_async(_match_id,
+									OpCodes.BALL_COLLIDED_WITH_PADDLE,
+									var2str({
+										"position": position,
+										"velocity": velocity,
+										"bonus_velocity": bonus_velocity,
+										"spin": spin
+									}))

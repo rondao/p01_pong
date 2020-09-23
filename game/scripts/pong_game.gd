@@ -10,7 +10,7 @@ onready var _right_paddle := $RightPaddle as Paddle
 onready var _left_goal := $LeftGoal as PhysicsBody2D
 onready var _right_goal := $RightGoal as PhysicsBody2D
 
-onready var _ball := $Ball as Node2D
+onready var _ball := $Ball as Ball
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER, SERVER}
 var _game_type: int = GameType.NONE
@@ -121,6 +121,10 @@ func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 					_right_paddle.set_position(str2var(match_state.data))
 				Globals.Side.RIGHT:
 					_left_paddle.set_position(str2var(match_state.data))
+		GameServer.OpCodes.BALL_COLLIDED_WITH_PADDLE:
+			var data: Dictionary = str2var(match_state.data)
+			print("Received ball collided: " + str(data))
+			_ball.apply_collision(data["position"], data["velocity"], data["bonus_velocity"], data["spin"])
 
 
 func _on_Ball_collided_goal(side: int):

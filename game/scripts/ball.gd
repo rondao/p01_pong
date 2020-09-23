@@ -1,4 +1,5 @@
 extends KinematicBody2D
+class_name Ball
 
 signal collided_goal()
 
@@ -58,8 +59,9 @@ func _physics_process(delta: float):
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
-			if Network.is_network_game():
-				rpc("_ball_after_collision", position, _velocity, _bonus_velocity, _spin)
+			if GameServer.is_network_game():
+				#rpc("apply_collision", position, _velocity, _bonus_velocity, _spin)
+				GameServer.send_ball_collided(position, _velocity, _bonus_velocity, _spin)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
@@ -78,7 +80,7 @@ remote func _collided_goal(side: int):
 	emit_signal("collided_goal", side)
 
 
-remote func _ball_after_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
+remote func apply_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
 	position = _new_position
 	_velocity = _new_velocity
 	_bonus_velocity = _new_bonus_velocity
