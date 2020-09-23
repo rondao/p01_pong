@@ -67,12 +67,14 @@ func _physics_process(delta: float):
 			_spawn_collision_sfx()
 			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
-			if Network.is_network_game():
-				rpc("_collided_goal", Globals.Side.LEFT)
+			if GameServer.is_network_game():
+				GameServer.send_collided_goal(Globals.Side.LEFT)
+				#rpc("_collided_goal", Globals.Side.LEFT)
 			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
-			if Network.is_network_game():
-				rpc("_collided_goal", Globals.Side.RIGHT)
+			if GameServer.is_network_game():
+				GameServer.send_collided_goal(Globals.Side.RIGHT)
+				#rpc("_collided_goal", Globals.Side.RIGHT)
 			_collided_goal(Globals.Side.RIGHT)
 
 

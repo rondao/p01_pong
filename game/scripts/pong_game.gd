@@ -125,6 +125,8 @@ func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 			var data: Dictionary = str2var(match_state.data)
 			print("Received ball collided: " + str(data))
 			_ball.apply_collision(data["position"], data["velocity"], data["bonus_velocity"], data["spin"])
+		GameServer.OpCodes.GOAL:
+			_on_Ball_collided_goal(str2var(match_state.data))
 
 
 func _on_Ball_collided_goal(side: int):

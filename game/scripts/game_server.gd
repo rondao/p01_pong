@@ -115,3 +115,9 @@ func send_ball_collided(position: Vector2, velocity: Vector2, bonus_velocity: fl
 										"bonus_velocity": bonus_velocity,
 										"spin": spin
 									}))
+
+
+func send_collided_goal(side: int):
+	_socket.send_match_state_async(_match_id,
+									OpCodes.GOAL,
+									var2str(side))
