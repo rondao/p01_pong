@@ -17,6 +17,7 @@ var _players: Array
 enum OpCodes {
 	CONFIGURE_GAME = 1,
 	SET_PADDLE_POSITION,
+	SET_PADDLE_CHARGE,
 	BALL_COLLIDED_WITH_PADDLE,
 	GOAL
 }
@@ -105,6 +106,7 @@ func send_paddle_position(position: Vector2):
 									OpCodes.SET_PADDLE_POSITION,
 									var2str(position))
 
+
 func send_ball_collided(position: Vector2, velocity: Vector2, bonus_velocity: float, spin: float):
 	print("sending ball collided: " + str(position))
 	_socket.send_match_state_async(_match_id,
@@ -121,3 +123,9 @@ func send_collided_goal(side: int):
 	_socket.send_match_state_async(_match_id,
 									OpCodes.GOAL,
 									var2str(side))
+
+
+func send_paddle_charge(charge_value: float):
+	_socket.send_match_state_async(_match_id,
+									OpCodes.SET_PADDLE_CHARGE,
+									var2str(charge_value))
