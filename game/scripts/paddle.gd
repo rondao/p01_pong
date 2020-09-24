@@ -58,20 +58,17 @@ func _handle_input(player_number: String, delta: float):
 	if Input.is_action_pressed(player_number + "_charge"):
 		if GameServer.is_network_game():
 			GameServer.send_paddle_charge(min(charge + delta, _max_charge))
-			#rpc_unreliable("set_charge", min(charge + delta, _max_charge))
 		set_charge(min(charge + delta, _max_charge))
 		velocity.y *= 1.0 - charge
 	else:
 		if GameServer.is_network_game():
 			GameServer.send_paddle_charge(0.0)
-			#rpc_unreliable("set_charge", 0.0)
 		set_charge(0.0)
 
 
 func _collide_ball():
 	if GameServer.is_network_game():
 		GameServer.send_paddle_charge(0.0)
-		#rpc("set_charge", 0.0)
 	set_charge(0.0)
 
 

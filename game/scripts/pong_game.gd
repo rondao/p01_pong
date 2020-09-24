@@ -106,10 +106,8 @@ func _on_Timer_timeout():
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
 		match player_side:
 			Globals.Side.LEFT:
-				#_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
 				GameServer.send_paddle_position(_left_paddle.position)
 			Globals.Side.RIGHT:
-				#_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
 				GameServer.send_paddle_position(_right_paddle.position)
 
 
@@ -192,7 +190,6 @@ func _end_game():
 	get_tree().set_pause(false)
 
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		#(get_tree().network_peer as WebSocketClient).disconnect_from_host()
 		GameServer.leave_current_match()
 
 	var main_menu := (load("res://game/scenes/main_menu.tscn") as PackedScene).instance()

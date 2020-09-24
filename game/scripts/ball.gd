@@ -60,7 +60,6 @@ func _physics_process(delta: float):
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
 			if GameServer.is_network_game():
-				#rpc("apply_collision", position, _velocity, _bonus_velocity, _spin)
 				GameServer.send_ball_collided(position, _velocity, _bonus_velocity, _spin)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
@@ -69,12 +68,10 @@ func _physics_process(delta: float):
 		elif collider.name == "LeftGoal":
 			if GameServer.is_network_game():
 				GameServer.send_collided_goal(Globals.Side.LEFT)
-				#rpc("_collided_goal", Globals.Side.LEFT)
 			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
 			if GameServer.is_network_game():
 				GameServer.send_collided_goal(Globals.Side.RIGHT)
-				#rpc("_collided_goal", Globals.Side.RIGHT)
 			_collided_goal(Globals.Side.RIGHT)
 
 

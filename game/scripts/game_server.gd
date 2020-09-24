@@ -4,9 +4,14 @@ signal game_found()
 
 const NAKAMA_IP_SERVER := "35.198.29.57"
 
-onready var _client := Nakama.create_client("defaultkey", NAKAMA_IP_SERVER, 7350, "http", Nakama.DEFAULT_TIMEOUT, NakamaLogger.LOG_LEVEL.VERBOSE)
+onready var _client := Nakama.create_client("defaultkey",
+											NAKAMA_IP_SERVER,
+											7350,
+											"http",
+											Nakama.DEFAULT_TIMEOUT,
+											NakamaLogger.LOG_LEVEL.VERBOSE)
 
-var _socket: NakamaSocket 
+var _socket: NakamaSocket
 var _session: NakamaSession
 
 var _match_id: String
@@ -30,10 +35,8 @@ func _ready():
 
 func register_async() -> NakamaSession:
 	var id = OS.get_unique_id() if OS.get_name() != "HTML5" else "default_id"
-	
-	var session: NakamaSession = yield(_client.authenticate_custom_async(id), "completed")
 
-	print("=== RONDAO : DEBUG === register_async")
+	var session: NakamaSession = yield(_client.authenticate_custom_async(id), "completed")
 	return session if not session.is_exception() else null
 
 
@@ -41,7 +44,6 @@ func connect_to_server_async():
 	_socket = Nakama.create_socket_from(_client)
 
 	var result: NakamaAsyncResult = yield(_socket.connect_async(_session), "completed")
-
 	if not result.is_exception():
 		_socket.connect("connected", self, "_on_NakamaSocket_connected")
 		_socket.connect("closed", self, "_on_NakamaSocket_closed")
@@ -49,8 +51,6 @@ func connect_to_server_async():
 		_socket.connect("received_matchmaker_matched", self, "_on_NakamaSocket_received_matchmaker_matched")
 		_socket.connect("received_match_presence", self, "_on_NakamaSocket_received_match_presence")
 		_socket.connect("received_channel_message", self, "_on_NamakaSocket_received_channel_message")
-
-	print("=== RONDAO : DEBUG === connect_to_server_async")
 
 
 func is_network_game():
@@ -62,41 +62,36 @@ func request_matchmaking():
 		yield(_socket.add_matchmaker_async("*", 2, 2), "completed")
 
 	if matchmaker_ticket.is_exception():
-		print("=== RONDAO : DEBUG === matchmaker_ticket.is_exception()")
-		return
-
-	print("=== RONDAO : DEBUG === request_matchmaking")
+		print("Exception occured on GameServer.request_matchmaking: %s" % matchmaker_ticket)
 
 
 func leave_current_match():
 	var leave: NakamaAsyncResult = yield(_socket.leave_match_async(_match_id), "completed")
 	if leave.is_exception():
-		print("An error occured: %s" % leave)
+		print("Exception occured on GameServer.leave_current_match: %s" % leave)
+
 	_players.clear()
 
 
 func _on_NakamaSocket_received_matchmaker_matched(p_matched: NakamaRTAPI.MatchmakerMatched):
 	var joined_match: NakamaRTAPI.Match = yield(_socket.join_matched_async(p_matched), "completed")
 	if joined_match.is_exception():
-		print("=== RONDAO : DEBUG ===  _on_matchmaker_matched: An error occured: %s" % joined_match)
+		print("Exception occured on GameServer._on_NakamaSocket_received_matchmaker_matched: %s" % joined_match)
 		return
-	print("=== RONDAO : DEBUG ===  _on_matchmaker_matched: Joined match: %s" % [joined_match.match_id])
+
 	_match_id = joined_match.match_id
 	_self_id = joined_match.self_user.user_id
-	print("=== RONDAO : DEBUG ===  _on_matchmaker_matched: self_user: %s" % [joined_match.self_user.user_id])
+
 	for presence in joined_match.presences:
-		print("=== RONDAO : DEBUG ===  _on_matchmaker_matched: User id %s name %s'." % [presence.user_id, presence.username])
 		_players.append(presence)
 		_check_game_ready()
 
 
 func _on_NakamaSocket_received_match_presence(p_presence: NakamaRTAPI.MatchPresenceEvent):
 	for p in p_presence.joins:
-		print("=== RONDAO : DEBUG ===  _on_match_presence: Opponent joins: %s" % p.user_id)
 		_players.append(p)
 		_check_game_ready()
 	for p in p_presence.leaves:
-		print("=== RONDAO : DEBUG ===  _on_match_presence: Opponent leaves: %s" % p.user_id)
 		_players.erase(p)
 
 
@@ -115,7 +110,6 @@ func send_paddle_position(position: Vector2):
 
 
 func send_ball_collided(position: Vector2, velocity: Vector2, bonus_velocity: float, spin: float):
-	print("sending ball collided: " + str(position))
 	_socket.send_match_state_async(_match_id,
 									OpCodes.BALL_COLLIDED_WITH_PADDLE,
 									var2str({

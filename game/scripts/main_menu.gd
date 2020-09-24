@@ -3,13 +3,6 @@ extends ColorRect
 signal game_started()
 
 
-func _ready():
-	for argument in OS.get_cmdline_args():
-		if argument == "--server":
-			$Margin.queue_free()
-			Network.start_server()
-
-
 func _on_PlayAgainstAI_pressed():
 	yield(_check_user_options_set(), "completed")
 	_start_game(PongGame.create_game(PongGame.GameType.LOCAL_AI))
@@ -20,10 +13,6 @@ func _on_PlayRanked_pressed():
 
 	var searching_popup := _popup_searching_game()
 	connect("game_started", searching_popup, "queue_free")
-	Network.connect("search_failed", searching_popup, "queue_free")
-
-	#Network.connect("game_found", self, "_on_Network_game_found")
-	#Network.request_ranked_game()
 
 	GameServer.connect("game_found", self, "_on_Network_game_found")
 	GameServer.request_matchmaking()
