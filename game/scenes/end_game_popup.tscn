@@ -65,4 +65,5 @@ text = "QUIT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="popup_hide" from="." to="." method="_on_EndGamePopup_popup_hide"]
 [connection signal="pressed" from="Margin/HBox/Quit" to="." method="_on_Quit_pressed"]
