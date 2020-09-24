@@ -192,7 +192,8 @@ func _end_game():
 	get_tree().set_pause(false)
 
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		(get_tree().network_peer as WebSocketClient).disconnect_from_host()
+		#(get_tree().network_peer as WebSocketClient).disconnect_from_host()
+		GameServer.leave_current_match()
 
 	var main_menu := (load("res://game/scenes/main_menu.tscn") as PackedScene).instance()
 

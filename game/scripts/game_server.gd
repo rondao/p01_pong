@@ -68,6 +68,13 @@ func request_matchmaking():
 	print("=== RONDAO : DEBUG === request_matchmaking")
 
 
+func leave_current_match():
+	var leave: NakamaAsyncResult = yield(_socket.leave_match_async(_match_id), "completed")
+	if leave.is_exception():
+		print("An error occured: %s" % leave)
+	_players.clear()
+
+
 func _on_NakamaSocket_received_matchmaker_matched(p_matched: NakamaRTAPI.MatchmakerMatched):
 	var joined_match: NakamaRTAPI.Match = yield(_socket.join_matched_async(p_matched), "completed")
 	if joined_match.is_exception():
