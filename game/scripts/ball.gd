@@ -1,4 +1,5 @@
 extends KinematicBody2D
+class_name Ball
 
 signal collided_goal()
 
@@ -58,19 +59,19 @@ func _physics_process(delta: float):
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
-			if Network.is_network_game():
-				rpc("_ball_after_collision", position, _velocity, _bonus_velocity, _spin)
+			if GameServer.is_network_game():
+				GameServer.send_ball_collided(position, _velocity, _bonus_velocity, _spin)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
 			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
-			if Network.is_network_game():
-				rpc("_collided_goal", Globals.Side.LEFT)
+			if GameServer.is_network_game():
+				GameServer.send_collided_goal(Globals.Side.LEFT)
 			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
-			if Network.is_network_game():
-				rpc("_collided_goal", Globals.Side.RIGHT)
+			if GameServer.is_network_game():
+				GameServer.send_collided_goal(Globals.Side.RIGHT)
 			_collided_goal(Globals.Side.RIGHT)
 
 
@@ -78,7 +79,7 @@ remote func _collided_goal(side: int):
 	emit_signal("collided_goal", side)
 
 
-remote func _ball_after_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
+remote func apply_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
 	position = _new_position
 	_velocity = _new_velocity
 	_bonus_velocity = _new_bonus_velocity

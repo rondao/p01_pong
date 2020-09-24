@@ -1,0 +1,135 @@
+# Cockroach Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: cockroachdb
+spec:
+  ports:
+  - name: "26257"
+    port: 26257
+  - name: "8080"
+    port: 8080
+  selector:
+    app: cockroachdb
+
+---
+# Cockroach Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cockroachdb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cockroachdb
+  template:
+    metadata:
+      labels:
+        app: cockroachdb
+    spec:
+      containers:
+      - args:
+        - start
+        - --insecure
+        - --store=attrs=ssd,path=/var/lib/cockroach/
+        image: cockroachdb/cockroach:v19.2.5
+        name: cockroachdb
+        ports:
+        - containerPort: 26257
+        - containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/cockroach
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: data
+
+---
+# Cockroach PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: data
+  name: data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+# Nakama Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nakama
+spec:
+  type: LoadBalancer
+  ports:
+  - name: "7349"
+    port: 7349
+  - name: "7350"
+    port: 7350
+  - name: "7351"
+    port: 7351
+  selector:
+    app: nakama
+
+---
+# Nakama Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nakama-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nakama
+  template:
+    metadata:
+      labels:
+        app: nakama
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -ecx
+        - |
+          /nakama/nakama migrate up --database.address root@cockroachdb:26257 && exec /nakama/nakama --name nakama1 --database.address root@cockroachdb:26257
+        image: heroiclabs/nakama:2.12.0
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 7350
+        name: nakama
+        ports:
+        - containerPort: 7349
+        - containerPort: 7350
+        - containerPort: 7351
+        resources: {}
+        volumeMounts:
+        - mountPath: /nakama/data
+          name: nakama-claim0
+      volumes:
+      - name: nakama-claim0
+        persistentVolumeClaim:
+          claimName: nakama-claim0
+
+---
+# Nakama PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nakama-claim0
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

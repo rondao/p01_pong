@@ -10,7 +10,7 @@ onready var _right_paddle := $RightPaddle as Paddle
 onready var _left_goal := $LeftGoal as PhysicsBody2D
 onready var _right_goal := $RightGoal as PhysicsBody2D
 
-onready var _ball := $Ball as Node2D
+onready var _ball := $Ball as Ball
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER, SERVER}
 var _game_type: int = GameType.NONE
@@ -38,7 +38,7 @@ func _ready():
 			Globals.MobileInput.TWO_HANDS:
 				mobile_input = (load("res://game/scenes/mobile_inputs/mobile_input_two_hands.tscn") as PackedScene).instance()
 
-		if Network.is_network_game():
+		if get_tree().network_peer != null:
 			mobile_input.set_side(player_side)
 
 		add_child(mobile_input)
@@ -73,6 +73,7 @@ func _configure_game_as_server():
 func _configure_game_as_network_multiplayer():
 	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
 	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
+	GameServer._socket.connect("received_match_state", self, "_on_NakamaSocket_received_match_state")
 
 	match player_side:
 		Globals.Side.LEFT:
@@ -101,13 +102,35 @@ func _configure_game_as_local_ai():
 	_right_paddle.player_type = Paddle.PlayerType.AI
 
 
-func _process(_delta: float):
+func _on_Timer_timeout():
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
 		match player_side:
 			Globals.Side.LEFT:
-				_left_paddle.rpc_unreliable("set_position", _left_paddle.position)
+				GameServer.send_paddle_position(_left_paddle.position)
 			Globals.Side.RIGHT:
-				_right_paddle.rpc_unreliable("set_position", _right_paddle.position)
+				GameServer.send_paddle_position(_right_paddle.position)
+
+
+func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
+	match match_state.op_code:
+		GameServer.OpCodes.SET_PADDLE_POSITION:
+			match player_side:
+				Globals.Side.LEFT:
+					_right_paddle.set_position(str2var(match_state.data))
+				Globals.Side.RIGHT:
+					_left_paddle.set_position(str2var(match_state.data))
+		GameServer.OpCodes.SET_PADDLE_CHARGE:
+			match player_side:
+				Globals.Side.LEFT:
+					_right_paddle.set_charge(str2var(match_state.data))
+				Globals.Side.RIGHT:
+					_left_paddle.set_charge(str2var(match_state.data))
+		GameServer.OpCodes.BALL_COLLIDED_WITH_PADDLE:
+			var data: Dictionary = str2var(match_state.data)
+			print("Received ball collided: " + str(data))
+			_ball.apply_collision(data["position"], data["velocity"], data["bonus_velocity"], data["spin"])
+		GameServer.OpCodes.GOAL:
+			_on_Ball_collided_goal(str2var(match_state.data))
 
 
 func _on_Ball_collided_goal(side: int):
@@ -167,7 +190,7 @@ func _end_game():
 	get_tree().set_pause(false)
 
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		Network.disconnect_multiplayer_game()
+		GameServer.leave_current_match()
 
 	var main_menu := (load("res://game/scenes/main_menu.tscn") as PackedScene).instance()
 
