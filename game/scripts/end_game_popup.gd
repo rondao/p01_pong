@@ -33,3 +33,7 @@ func _ready():
 
 func _on_Quit_pressed():
 	hide()
+
+
+func _on_EndGamePopup_popup_hide():
+	queue_free()
