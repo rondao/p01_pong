@@ -59,27 +59,22 @@ func _physics_process(delta: float):
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
-			if GameServer.is_network_game():
-				GameServer.send_ball_collided(position, _velocity, _bonus_velocity, _spin)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
 			_audio_wall_bounce.play()
 		elif collider.name == "LeftGoal":
-			if GameServer.is_network_game():
-				GameServer.send_collided_goal(Globals.Side.LEFT)
 			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
-			if GameServer.is_network_game():
-				GameServer.send_collided_goal(Globals.Side.RIGHT)
 			_collided_goal(Globals.Side.RIGHT)
 
 
-remote func _collided_goal(side: int):
+func _collided_goal(side: int):
+	GameServer.send_collided_goal(side)
 	emit_signal("collided_goal", side)
 
 
-remote func apply_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
+func apply_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_velocity: float, _new_spin: float):
 	position = _new_position
 	_velocity = _new_velocity
 	_bonus_velocity = _new_bonus_velocity
@@ -121,6 +116,7 @@ func _collide_paddles(collision: KinematicCollision2D):
 	_bonus_velocity += collider.charge
 	_spin *= 1.0 + collider.charge
 
+	GameServer.send_ball_collided(position, _velocity, _bonus_velocity, _spin)
 	_after_paddle_collision()
 
 

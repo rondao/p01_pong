@@ -104,29 +104,33 @@ func _check_game_ready():
 
 
 func send_paddle_position(position: Vector2):
-	_socket.send_match_state_async(_match_id,
-									OpCodes.SET_PADDLE_POSITION,
-									var2str(position))
+	if is_network_game():
+		_socket.send_match_state_async(_match_id,
+										OpCodes.SET_PADDLE_POSITION,
+										var2str(position))
 
 
 func send_ball_collided(position: Vector2, velocity: Vector2, bonus_velocity: float, spin: float):
-	_socket.send_match_state_async(_match_id,
-									OpCodes.BALL_COLLIDED_WITH_PADDLE,
-									var2str({
-										"position": position,
-										"velocity": velocity,
-										"bonus_velocity": bonus_velocity,
-										"spin": spin
-									}))
+	if is_network_game():
+		_socket.send_match_state_async(_match_id,
+										OpCodes.BALL_COLLIDED_WITH_PADDLE,
+										var2str({
+											"position": position,
+											"velocity": velocity,
+											"bonus_velocity": bonus_velocity,
+											"spin": spin
+										}))
 
 
 func send_collided_goal(side: int):
-	_socket.send_match_state_async(_match_id,
-									OpCodes.GOAL,
-									var2str(side))
+	if is_network_game():
+		_socket.send_match_state_async(_match_id,
+										OpCodes.GOAL,
+										var2str(side))
 
 
 func send_paddle_charge(charge_value: float):
-	_socket.send_match_state_async(_match_id,
-									OpCodes.SET_PADDLE_CHARGE,
-									var2str(charge_value))
+	if is_network_game():
+		_socket.send_match_state_async(_match_id,
+										OpCodes.SET_PADDLE_CHARGE,
+										var2str(charge_value))

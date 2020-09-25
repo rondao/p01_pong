@@ -56,30 +56,29 @@ func _handle_input(player_number: String, delta: float):
 		velocity = Vector2.ZERO
 
 	if Input.is_action_pressed(player_number + "_charge"):
-		if GameServer.is_network_game():
-			GameServer.send_paddle_charge(min(charge + delta, _max_charge))
-		set_charge(min(charge + delta, _max_charge))
+		_update_charge(min(charge + delta, _max_charge))
 		velocity.y *= 1.0 - charge
 	else:
-		if GameServer.is_network_game():
-			GameServer.send_paddle_charge(0.0)
-		set_charge(0.0)
+		_update_charge(0.0)
 
 
 func _collide_ball():
-	if GameServer.is_network_game():
-		GameServer.send_paddle_charge(0.0)
-	set_charge(0.0)
+	_update_charge(0.0)
 
 
 func _collide_walls():
 	velocity = Vector2.ZERO
 
 
-remote func set_charge(charge_value: float):
+func _update_charge(charge_value: float):
+	GameServer.send_paddle_charge(charge_value)
+	set_charge(charge_value)
+
+
+func set_charge(charge_value: float):
 	charge = charge_value
 	modulate = Color(1.0, 1.0 - charge, 1.0 - charge)
 
 
-remote func set_position(pos: Vector2):
+func set_position(pos: Vector2):
 	position = pos
