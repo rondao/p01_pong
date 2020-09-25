@@ -12,6 +12,8 @@ var velocity := Vector2()
 var charge := 0.0
 var _max_charge := 0.5
 
+var _network_position: Vector2
+
 
 func _ready():
 	paddle_type = UserPreferences.paddle_type
@@ -34,6 +36,8 @@ func _physics_process(delta: float):
 				_collide_ball()
 			elif collider.is_in_group("walls"):
 				_collide_walls()
+	elif player_type == PlayerType.NETWORK:
+		_interpolate_movement(delta)
 
 
 func _handle_input(player_number: String, delta: float):
@@ -43,15 +47,7 @@ func _handle_input(player_number: String, delta: float):
 		velocity.y = speed
 	elif Input.is_action_pressed(player_number + "_move_to"):
 		var move_to := Input.get_action_strength(player_number + "_move_to")
-		var relative_difference = move_to - (position.y / get_viewport().size.y)
-
-		if abs(relative_difference) > 0.01:
-			if relative_difference < 0:
-				velocity.y = -speed
-			else:
-				velocity.y = speed
-		else:
-			velocity = Vector2.ZERO
+		velocity.y = speed * _get_move_to_direction(move_to, speed * delta)
 	else:
 		velocity = Vector2.ZERO
 
@@ -60,6 +56,19 @@ func _handle_input(player_number: String, delta: float):
 		velocity.y *= 1.0 - charge
 	else:
 		_update_charge(0.0)
+
+
+func _interpolate_movement(delta: float):
+	velocity.y = speed * _get_move_to_direction(_network_position.y, speed * delta)
+	position += velocity * delta
+
+
+func _get_move_to_direction(move_to_y: float, delta_speed: float) -> int:
+	var relative_difference = move_to_y - position.y
+	if abs(relative_difference) > delta_speed:
+		return 1 if relative_difference > 0 else -1
+	else:
+		return 0
 
 
 func _collide_ball():
@@ -90,4 +99,4 @@ func set_charge(charge_value: float):
 
 
 func set_position(pos: Vector2):
-	position = pos
+	_network_position = pos

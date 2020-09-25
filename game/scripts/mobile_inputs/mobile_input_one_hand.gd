@@ -27,7 +27,7 @@ func _input(event: InputEvent):
 
 func _drag_to_action(drag: InputEventScreenDrag):
 	if _is_correct_side(drag.position.x):
-		Input.action_press(player + "_move_to", drag.position.y / get_viewport().size.y)
+		Input.action_press(player + "_move_to", drag.position.y)
 
 		if abs(drag.position.x - _touch_position.x) > DRAG_FOR_CHARGE:
 			Input.action_press(player + "_charge")
@@ -37,7 +37,7 @@ func _touch_to_action(touch: InputEventScreenTouch):
 	if _is_correct_side(touch.position.x):
 		if touch.is_pressed():
 			_touch_position = touch.position
-			Input.action_press(player + "_move_to", touch.position.y / get_viewport().size.y)
+			Input.action_press(player + "_move_to", touch.position.y)
 		else:
 			Input.action_release(player + "_move_to")
 			Input.action_release(player + "_charge")
