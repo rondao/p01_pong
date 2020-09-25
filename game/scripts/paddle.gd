@@ -75,6 +75,15 @@ func _update_charge(charge_value: float):
 	set_charge(charge_value)
 
 
+func set_player_type(new_player_type: int):
+	player_type = new_player_type
+
+	# Network players will handle their collisions and send to us.
+	if player_type == PlayerType.NETWORK:
+		set_collision_layer(0)
+		set_collision_mask(0)
+
+
 func set_charge(charge_value: float):
 	charge = charge_value
 	modulate = Color(1.0, 1.0 - charge, 1.0 - charge)

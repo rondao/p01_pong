@@ -74,14 +74,10 @@ func _configure_game_as_server():
 	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
 	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
 
-	_my_paddle.player_type = Paddle.PlayerType.NETWORK
-	_my_paddle.set_collision_layer(0)
-	_my_paddle.set_collision_mask(0)
+	_my_paddle.set_player_type(Paddle.PlayerType.NETWORK)
 	_my_goal.set_collision_layer(0)
 	_my_goal.set_collision_mask(0)
-	_opponent_paddle.player_type = Paddle.PlayerType.NETWORK
-	_opponent_paddle.set_collision_layer(0)
-	_opponent_paddle.set_collision_mask(0)
+	_opponent_paddle.set_player_type(Paddle.PlayerType.NETWORK)
 	_opponent_goal.set_collision_layer(0)
 	_opponent_goal.set_collision_mask(0)
 
@@ -91,22 +87,20 @@ func _configure_game_as_network_multiplayer():
 	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
 	GameServer._socket.connect("received_match_state", self, "_on_NakamaSocket_received_match_state")
 
-	_my_paddle.player_type = Paddle.PlayerType.HUMAN_01
-	_opponent_paddle.player_type = Paddle.PlayerType.NETWORK
-	_opponent_paddle.set_collision_layer(0)
-	_opponent_paddle.set_collision_mask(0)
+	_my_paddle.set_player_type(Paddle.PlayerType.HUMAN_01)
+	_opponent_paddle.set_player_type(Paddle.PlayerType.NETWORK)
 	_opponent_goal.set_collision_layer(0)
 	_opponent_goal.set_collision_mask(0)
 
 
 func _configure_game_as_local_multiplayer():
-	_my_paddle.player_type = Paddle.PlayerType.HUMAN_01
-	_opponent_paddle.player_type = Paddle.PlayerType.HUMAN_02
+	_my_paddle.set_player_type(Paddle.PlayerType.HUMAN_01)
+	_opponent_paddle.set_player_type(Paddle.PlayerType.HUMAN_02)
 
 
 func _configure_game_as_local_ai():
-	_my_paddle.player_type = Paddle.PlayerType.HUMAN_01
-	_opponent_paddle.player_type = Paddle.PlayerType.AI
+	_my_paddle.set_player_type(Paddle.PlayerType.HUMAN_01)
+	_opponent_paddle.set_player_type(Paddle.PlayerType.AI)
 
 
 func _on_Timer_timeout():
