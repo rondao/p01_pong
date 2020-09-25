@@ -12,7 +12,7 @@ var velocity := Vector2()
 var charge := 0.0
 var _max_charge := 0.5
 
-var _network_position: Vector2
+var _move_to: float
 
 
 func _ready():
@@ -26,10 +26,13 @@ func _process(delta: float):
 		PlayerType.HUMAN_02:
 			_handle_input("player_02", delta)
 
+	if _move_to != 0:
+		velocity.y = speed * _get_move_to_direction(_move_to, speed * delta)
+
 
 func _physics_process(delta: float):
 	if player_type == PlayerType.HUMAN_01 or player_type == PlayerType.HUMAN_02:
-		var collision := move_and_collide(velocity * delta)
+		var collision := move_and_collide(velocity * delta * (1.0 - charge))
 		if collision:
 			var collider := collision.collider as Node
 			if collider.is_in_group("ball"):
@@ -37,7 +40,7 @@ func _physics_process(delta: float):
 			elif collider.is_in_group("walls"):
 				_collide_walls()
 	elif player_type == PlayerType.NETWORK:
-		_interpolate_movement(delta)
+		position += velocity * delta * (1.0 - charge)
 
 
 func _handle_input(player_number: String, delta: float):
@@ -46,21 +49,15 @@ func _handle_input(player_number: String, delta: float):
 	elif Input.is_action_pressed(player_number + "_down"):
 		velocity.y = speed
 	elif Input.is_action_pressed(player_number + "_move_to"):
-		var move_to := Input.get_action_strength(player_number + "_move_to")
-		velocity.y = speed * _get_move_to_direction(move_to, speed * delta)
+		_move_to = Input.get_action_strength(player_number + "_move_to")
 	else:
 		velocity = Vector2.ZERO
+		_move_to = 0.0
 
 	if Input.is_action_pressed(player_number + "_charge"):
 		_update_charge(min(charge + delta, _max_charge))
-		velocity.y *= 1.0 - charge
 	else:
 		_update_charge(0.0)
-
-
-func _interpolate_movement(delta: float):
-	velocity.y = speed * _get_move_to_direction(_network_position.y, speed * delta)
-	position += velocity * delta
 
 
 func _get_move_to_direction(move_to_y: float, delta_speed: float) -> int:
@@ -99,4 +96,4 @@ func set_charge(charge_value: float):
 
 
 func set_position(pos: Vector2):
-	_network_position = pos
+	_move_to = pos.y
