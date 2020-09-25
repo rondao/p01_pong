@@ -6,7 +6,7 @@ signal right_scored()
 
 onready var _ball := $Ball as Ball
 
-enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER, SERVER}
+enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER}
 var _game_type: int = GameType.NONE
 
 var _my_paddle: Paddle
@@ -46,8 +46,6 @@ func _ready():
 			_opponent_goal = $LeftGoal
 
 	match _game_type:
-		GameType.SERVER:
-			_configure_game_as_server()
 		GameType.NETWORK_MULTIPLAYER:
 			_configure_game_as_network_multiplayer()
 		GameType.LOCAL_MULTIPLAYER:
@@ -70,21 +68,7 @@ func _add_touchscreen_input():
 	add_child(mobile_input)
 
 
-func _configure_game_as_server():
-	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
-	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
-
-	_my_paddle.set_player_type(Paddle.PlayerType.NETWORK)
-	_my_goal.set_collision_layer(0)
-	_my_goal.set_collision_mask(0)
-	_opponent_paddle.set_player_type(Paddle.PlayerType.NETWORK)
-	_opponent_goal.set_collision_layer(0)
-	_opponent_goal.set_collision_mask(0)
-
-
 func _configure_game_as_network_multiplayer():
-	get_tree().connect("network_peer_disconnected", self, "_on_Network_disconnected")
-	get_tree().connect("server_disconnected", self, "_on_Network_disconnected")
 	GameServer._socket.connect("received_match_state", self, "_on_NakamaSocket_received_match_state")
 
 	_my_paddle.set_player_type(Paddle.PlayerType.HUMAN_01)
@@ -145,10 +129,6 @@ func _on_Ball_collided_goal(side: int):
 
 
 func _popup_end_game(won: bool, side: int):
-	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		get_tree().disconnect("network_peer_disconnected", self, "_on_Network_disconnected")
-		get_tree().disconnect("server_disconnected", self, "_on_Network_disconnected")
-
 	var end_game_popup : PopupPanel
 	if _game_type == GameType.LOCAL_MULTIPLAYER:
 		end_game_popup = EndGamePopup.create_popup_with_side_victory(side)
@@ -161,13 +141,6 @@ func _popup_end_game(won: bool, side: int):
 	end_game_popup.popup()
 
 	get_tree().set_pause(true)
-
-
-func _on_Network_disconnected(_peer_id := 0):
-	if _game_type == GameType.SERVER:
-		self.queue_free()
-	else:
-		_end_game()
 
 
 func _on_EndGamePopup_hide():
