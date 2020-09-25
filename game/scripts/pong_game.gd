@@ -4,9 +4,6 @@ class_name PongGame
 signal left_scored()
 signal right_scored()
 
-onready var _left_goal := $LeftGoal as PhysicsBody2D
-onready var _right_goal := $RightGoal as PhysicsBody2D
-
 onready var _ball := $Ball as Ball
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER, SERVER}
@@ -14,6 +11,9 @@ var _game_type: int = GameType.NONE
 
 var _my_paddle: Paddle
 var _opponent_paddle: Paddle
+
+var _my_goal: PhysicsBody2D
+var _opponent_goal: PhysicsBody2D
 
 var player_side: int
 
@@ -35,11 +35,15 @@ func _ready():
 
 	match player_side:
 		Globals.Side.LEFT:
-			_my_paddle = $LeftPaddle as Paddle
-			_opponent_paddle = $RightPaddle as Paddle
+			_my_paddle = $LeftPaddle
+			_my_goal = $LeftGoal
+			_opponent_paddle = $RightPaddle
+			_opponent_goal = $RightGoal
 		Globals.Side.RIGHT:
-			_opponent_paddle = $LeftPaddle as Paddle
-			_my_paddle = $RightPaddle as Paddle
+			_my_paddle = $RightPaddle
+			_my_goal = $RightGoal
+			_opponent_paddle = $LeftPaddle
+			_opponent_goal = $LeftGoal
 
 	match _game_type:
 		GameType.SERVER:
@@ -73,13 +77,13 @@ func _configure_game_as_server():
 	_my_paddle.player_type = Paddle.PlayerType.NETWORK
 	_my_paddle.set_collision_layer(0)
 	_my_paddle.set_collision_mask(0)
-	_left_goal.set_collision_layer(0)
-	_left_goal.set_collision_mask(0)
+	_my_goal.set_collision_layer(0)
+	_my_goal.set_collision_mask(0)
 	_opponent_paddle.player_type = Paddle.PlayerType.NETWORK
 	_opponent_paddle.set_collision_layer(0)
 	_opponent_paddle.set_collision_mask(0)
-	_right_goal.set_collision_layer(0)
-	_right_goal.set_collision_mask(0)
+	_opponent_goal.set_collision_layer(0)
+	_opponent_goal.set_collision_mask(0)
 
 
 func _configure_game_as_network_multiplayer():
@@ -91,14 +95,8 @@ func _configure_game_as_network_multiplayer():
 	_opponent_paddle.player_type = Paddle.PlayerType.NETWORK
 	_opponent_paddle.set_collision_layer(0)
 	_opponent_paddle.set_collision_mask(0)
-
-	match player_side:
-		Globals.Side.LEFT:
-			_right_goal.set_collision_layer(0)
-			_right_goal.set_collision_mask(0)
-		Globals.Side.RIGHT:
-			_left_goal.set_collision_layer(0)
-			_left_goal.set_collision_mask(0)
+	_opponent_goal.set_collision_layer(0)
+	_opponent_goal.set_collision_mask(0)
 
 
 func _configure_game_as_local_multiplayer():
