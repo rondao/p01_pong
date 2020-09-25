@@ -26,7 +26,7 @@ func _process(delta: float):
 		PlayerType.HUMAN_02:
 			_handle_input("player_02", delta)
 
-	if _move_to != 0:
+	if _move_to:
 		velocity.y = speed * _get_move_to_direction(_move_to, speed * delta)
 
 
