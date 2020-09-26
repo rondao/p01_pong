@@ -87,9 +87,9 @@ func _collide_paddles(collision: KinematicCollision2D):
 	var collider := collision.collider as Paddle
 	match collider.paddle_type:
 		Globals.PaddleType.DIFFERENTIAL:
-			_bonus_velocity = bonus_velocity_minimum + abs(collider.velocity.y) * 0.0015
+			_bonus_velocity = bonus_velocity_minimum + abs(collider.velocity.y) * 0.001
 			if collider.velocity.y:
-				_spin = -collider.velocity.y * 3
+				_spin = -collider.velocity.y * 1.75
 				_velocity.y = collider.velocity.y * 1.5
 			else:
 				_spin = -_velocity.y * 1.5

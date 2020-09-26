@@ -27,13 +27,13 @@ func _input(event: InputEvent):
 
 func _drag_to_action(drag: InputEventScreenDrag):
 	if _is_control_side(drag.position.x):
-		Input.action_press(player + "_move_to", drag.position.y / get_viewport().size.y)
+		Input.action_press(player + "_move_to", drag.position.y)
 
 
 func _touch_to_action(touch: InputEventScreenTouch):
 	if touch.is_pressed():
 		if _is_control_side(touch.position.x):
-			Input.action_press(player + "_move_to", touch.position.y / get_viewport().size.y)
+			Input.action_press(player + "_move_to", touch.position.y)
 		else:
 			Input.action_press(player + "_charge")
 	else:
