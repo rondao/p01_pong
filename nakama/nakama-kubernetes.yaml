@@ -113,6 +113,9 @@ spec:
         - containerPort: 7350
         - containerPort: 7351
         resources: {}
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
         volumeMounts:
         - mountPath: /nakama/data
           name: nakama-claim0
