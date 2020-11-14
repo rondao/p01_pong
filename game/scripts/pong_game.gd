@@ -54,6 +54,11 @@ func _ready():
 			_configure_game_as_local_ai()
 
 
+func _physics_process(_delta: float):
+	if _game_type == GameType.NETWORK_MULTIPLAYER:
+		GameServer.send_paddle_position(_my_paddle.position)
+
+
 func _add_touchscreen_input():
 	var mobile_input
 	match UserPreferences.mobile_input:
@@ -85,11 +90,6 @@ func _configure_game_as_local_multiplayer():
 func _configure_game_as_local_ai():
 	_my_paddle.set_player_type(Paddle.PlayerType.HUMAN_01)
 	_opponent_paddle.set_player_type(Paddle.PlayerType.AI)
-
-
-func _on_Timer_timeout():
-	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		GameServer.send_paddle_position(_my_paddle.position)
 
 
 func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
