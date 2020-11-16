@@ -56,7 +56,7 @@ func _ready():
 
 func _physics_process(_delta: float):
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		GameServer.send_paddle_position(_my_paddle.position)
+		GameServer.send_paddle_and_ball_state(_my_paddle.position, _my_paddle.charge, _ball.position)
 
 
 func _add_touchscreen_input():
@@ -94,10 +94,10 @@ func _configure_game_as_local_ai():
 
 func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 	match match_state.op_code:
-		GameServer.OpCodes.SET_PADDLE_POSITION:
-			_opponent_paddle.set_position(str2var(match_state.data))
-		GameServer.OpCodes.SET_PADDLE_CHARGE:
-			_opponent_paddle.set_charge(str2var(match_state.data))
+		GameServer.OpCodes.SET_PADDLE_BALL_STATE:
+			var data: Dictionary = str2var(match_state.data)
+			_opponent_paddle.set_position(data["paddle_position"])
+			_opponent_paddle.set_charge(data["paddle_charge"])
 		GameServer.OpCodes.BALL_COLLIDED_WITH_PADDLE:
 			var data: Dictionary = str2var(match_state.data)
 			_ball.apply_collision(data["position"], data["velocity"], data["bonus_velocity"], data["spin"])
