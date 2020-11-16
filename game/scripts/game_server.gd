@@ -2,7 +2,7 @@ extends Node
 
 signal game_found()
 
-const NAKAMA_IP_SERVER := "192.168.49.2"
+const NAKAMA_IP_SERVER := "192.168.0.21"
 
 onready var _client := Nakama.create_client("defaultkey",
 											NAKAMA_IP_SERVER,
