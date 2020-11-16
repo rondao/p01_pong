@@ -16,6 +16,7 @@ var _my_goal: PhysicsBody2D
 var _opponent_goal: PhysicsBody2D
 
 var player_side: int
+var _ball_moving_side: int = Globals.Side.RIGHT
 
 const goals_to_win := 2
 var _left_score := 0
@@ -56,7 +57,7 @@ func _ready():
 
 func _physics_process(_delta: float):
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
-		GameServer.send_paddle_position(_my_paddle.position)
+		GameServer.send_paddle_and_ball_state(_my_paddle.position, _my_paddle.charge, _ball.position)
 
 
 func _add_touchscreen_input():
@@ -94,12 +95,14 @@ func _configure_game_as_local_ai():
 
 func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 	match match_state.op_code:
-		GameServer.OpCodes.SET_PADDLE_POSITION:
-			_opponent_paddle.set_position(str2var(match_state.data))
-		GameServer.OpCodes.SET_PADDLE_CHARGE:
-			_opponent_paddle.set_charge(str2var(match_state.data))
+		GameServer.OpCodes.SET_PADDLE_BALL_STATE:
+			var data: Dictionary = str2var(match_state.data)
+			_opponent_paddle.set_position(data["paddle_position"])
+			_opponent_paddle.set_charge(data["paddle_charge"])
+			_adjust_ball_latency(data["ball_position"])
 		GameServer.OpCodes.BALL_COLLIDED_WITH_PADDLE:
 			var data: Dictionary = str2var(match_state.data)
+			_ball_moving_side = player_side
 			_ball.apply_collision(data["position"], data["velocity"], data["bonus_velocity"], data["spin"])
 		GameServer.OpCodes.GOAL:
 			_on_Ball_collided_goal(str2var(match_state.data))
@@ -126,6 +129,24 @@ func _on_Ball_collided_goal(side: int):
 				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
 				_popup_end_game(true, Globals.Side.RIGHT)
+
+
+
+func _on_Ball_collided_paddle(side: int):
+	match side:
+		Globals.Side.LEFT:
+			_ball_moving_side = Globals.Side.RIGHT
+		Globals.Side.RIGHT:
+			_ball_moving_side = Globals.Side.LEFT
+
+
+func _adjust_ball_latency(network_position: Vector2):
+	if player_side != _ball_moving_side:
+		match _ball_moving_side:
+			Globals.Side.LEFT:
+				_ball.latency_speed_adjustment = _ball.position.x / network_position.x
+			Globals.Side.RIGHT:
+				_ball.latency_speed_adjustment = (_ball.position.x - get_viewport().size.x) / (network_position.x - get_viewport().size.x)
 
 
 func _popup_end_game(won: bool, side: int):
