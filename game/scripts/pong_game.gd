@@ -16,6 +16,7 @@ var _my_goal: PhysicsBody2D
 var _opponent_goal: PhysicsBody2D
 
 var player_side: int
+var _ball_moving_side: int = Globals.Side.RIGHT
 
 const goals_to_win := 2
 var _left_score := 0
@@ -100,6 +101,7 @@ func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 			_opponent_paddle.set_charge(data["paddle_charge"])
 		GameServer.OpCodes.BALL_COLLIDED_WITH_PADDLE:
 			var data: Dictionary = str2var(match_state.data)
+			_ball_moving_side = player_side
 			_ball.apply_collision(data["position"], data["velocity"], data["bonus_velocity"], data["spin"])
 		GameServer.OpCodes.GOAL:
 			_on_Ball_collided_goal(str2var(match_state.data))
@@ -126,6 +128,15 @@ func _on_Ball_collided_goal(side: int):
 				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
 				_popup_end_game(true, Globals.Side.RIGHT)
+
+
+
+func _on_Ball_collided_paddle(side: int):
+	match side:
+		Globals.Side.LEFT:
+			_ball_moving_side = Globals.Side.RIGHT
+		Globals.Side.RIGHT:
+			_ball_moving_side = Globals.Side.LEFT
 
 
 func _popup_end_game(won: bool, side: int):

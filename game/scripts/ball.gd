@@ -2,6 +2,7 @@ extends KinematicBody2D
 class_name Ball
 
 signal collided_goal()
+signal collided_paddle()
 
 export(PackedScene) var CollisionSfx: PackedScene
 export(PackedScene) var GoalSfx: PackedScene
@@ -59,6 +60,10 @@ func _physics_process(delta: float):
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
 			_collide_paddles(collision)
+			if collider.name == "LeftPaddle":
+				emit_signal("collided_paddle", Globals.Side.LEFT)
+			elif collider.name == "RightPaddle":
+				emit_signal("collided_paddle", Globals.Side.RIGHT)
 		elif collider.is_in_group("walls"):
 			_collide_walls(collision)
 			_spawn_collision_sfx()
