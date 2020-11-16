@@ -99,6 +99,7 @@ func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 			var data: Dictionary = str2var(match_state.data)
 			_opponent_paddle.set_position(data["paddle_position"])
 			_opponent_paddle.set_charge(data["paddle_charge"])
+			_adjust_ball_latency(data["ball_position"])
 		GameServer.OpCodes.BALL_COLLIDED_WITH_PADDLE:
 			var data: Dictionary = str2var(match_state.data)
 			_ball_moving_side = player_side
@@ -137,6 +138,15 @@ func _on_Ball_collided_paddle(side: int):
 			_ball_moving_side = Globals.Side.RIGHT
 		Globals.Side.RIGHT:
 			_ball_moving_side = Globals.Side.LEFT
+
+
+func _adjust_ball_latency(network_position: Vector2):
+	if player_side != _ball_moving_side:
+		match _ball_moving_side:
+			Globals.Side.LEFT:
+				_ball.latency_speed_adjustment = _ball.position.x / network_position.x
+			Globals.Side.RIGHT:
+				_ball.latency_speed_adjustment = (_ball.position.x - get_viewport().size.x) / (network_position.x - get_viewport().size.x)
 
 
 func _popup_end_game(won: bool, side: int):

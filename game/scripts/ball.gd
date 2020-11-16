@@ -20,6 +20,7 @@ export(float) var maximum_x_velocity: float
 
 var _velocity := Vector2()
 var _bonus_velocity := 1.0
+var latency_speed_adjustment := 1.0
 
 var _spin := 0.0
 
@@ -50,12 +51,12 @@ func _draw():
 
 func _process(delta: float):
 	if _spin:
-		_velocity.y += _spin * delta * 3
-		_spin -= _spin * delta * 3
+		_velocity.y += _spin * latency_speed_adjustment * delta * 3
+		_spin -= _spin * latency_speed_adjustment * delta * 3
 
 
 func _physics_process(delta: float):
-	var collision := move_and_collide(_velocity * _bonus_velocity * delta)
+	var collision := move_and_collide(_velocity * _bonus_velocity * latency_speed_adjustment * delta)
 	if collision:
 		var collider := collision.collider as Node
 		if collider.is_in_group("paddles"):
@@ -84,6 +85,7 @@ func apply_collision(_new_position: Vector2, _new_velocity: Vector2, _new_bonus_
 	_velocity = _new_velocity
 	_bonus_velocity = _new_bonus_velocity
 	_spin = _new_spin
+	latency_speed_adjustment = 1
 
 	_after_paddle_collision()
 
