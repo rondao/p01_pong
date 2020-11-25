@@ -4,6 +4,10 @@ class_name PongGame
 signal left_scored()
 signal right_scored()
 
+export(PackedScene) var GoalSfx: PackedScene
+
+onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
+
 onready var _ball := $Ball as Ball
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER}
@@ -112,11 +116,20 @@ func _on_Ball_collided_goal(side: int):
 	match side:
 		Globals.Side.LEFT:
 			_right_score += 1
+			_spawn_goal_sfx(Globals.Side.RIGHT)
+			_ball._reset(Vector2.RIGHT)
 			emit_signal("right_scored", _right_score)
 		Globals.Side.RIGHT:
 			_left_score += 1
+			_spawn_goal_sfx(Globals.Side.LEFT)
+			_audio_goal.play()
+			_ball._reset(Vector2.LEFT)
 			emit_signal("left_scored", _left_score)
+	_audio_goal.play()
+	_has_game_ended()
 
+
+func _has_game_ended():
 	if _left_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
@@ -129,7 +142,6 @@ func _on_Ball_collided_goal(side: int):
 				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
 				_popup_end_game(true, Globals.Side.RIGHT)
-
 
 
 func _on_Ball_collided_paddle(side: int):
@@ -180,3 +192,17 @@ func _end_game():
 	get_tree().get_root().remove_child(self)
 
 	self.queue_free()
+
+
+func _spawn_goal_sfx(side : int):
+	var sfx := GoalSfx.instance() as Node2D
+
+	sfx.z_index = -1
+	sfx.position = _ball.position
+	match side:
+		Globals.Side.LEFT:
+			sfx.rotation = 0
+		Globals.Side.RIGHT:
+			sfx.rotation = PI
+
+	add_child(sfx)

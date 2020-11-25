@@ -5,7 +5,6 @@ signal collided_goal()
 signal collided_paddle()
 
 export(PackedScene) var CollisionSfx: PackedScene
-export(PackedScene) var GoalSfx: PackedScene
 
 export(float) var radius: float
 
@@ -30,7 +29,6 @@ var _trail_enabled := false
 onready var _audio_hit := $AudioHit as AudioStreamPlayer2D
 onready var _audio_power_hit := $AudioPowerHit as AudioStreamPlayer2D
 onready var _audio_wall_bounce := $AudioWallBounce as AudioStreamPlayer2D
-onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
 
 onready var _animation := $Animation as AnimationPlayer
 
@@ -171,28 +169,3 @@ func _spawn_collision_sfx():
 	sfx.position = position
 	get_parent().add_child(sfx)
 
-
-func _spawn_goal_sfx(side : int):
-	var sfx := GoalSfx.instance() as Node2D
-
-	sfx.z_index = -1
-	sfx.position = position
-	match side:
-		Globals.Side.LEFT:
-			sfx.rotation = 0
-		Globals.Side.RIGHT:
-			sfx.rotation = PI
-
-	get_parent().add_child(sfx)
-
-
-func _on_PongGame_left_scored(_score: int):
-	_spawn_goal_sfx(Globals.Side.RIGHT)
-	_audio_goal.play()
-	_reset(Vector2.RIGHT)
-
-
-func _on_PongGame_right_scored(_score: int):
-	_spawn_goal_sfx(Globals.Side.LEFT)
-	_audio_goal.play()
-	_reset(Vector2.LEFT)
