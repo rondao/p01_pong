@@ -79,6 +79,7 @@ margin_right = 216.0
 margin_bottom = 165.0
 
 [node name="AudioGoal" type="AudioStreamPlayer2D" parent="."]
+pause_mode = 2
 stream = ExtResource( 6 )
 [connection signal="left_scored" from="." to="Score/HBoxContainer/LeftScore" method="_on_PongGame_left_scored"]
 [connection signal="right_scored" from="." to="Score/HBoxContainer/RightScore" method="_on_PongGame_right_scored"]
