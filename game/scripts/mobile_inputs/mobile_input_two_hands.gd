@@ -1,4 +1,4 @@
-extends Node2D
+extends MobileInput
 
 ## Mobile Input Scheme two hands
 #
@@ -11,18 +11,6 @@ extends Node2D
 # Right side of the screen control the charge.
 # - Touching the right side will charge the Paddle.
 #
-
-onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
-
-export(String) var player := "player_01"
-export(Globals.Side) var side: int = Globals.Side.LEFT
-
-
-func _input(event: InputEvent):
-	if event is InputEventScreenDrag:
-		_drag_to_action(event as InputEventScreenDrag)
-	elif event is InputEventScreenTouch:
-		_touch_to_action(event as InputEventScreenTouch)
 
 
 func _drag_to_action(drag: InputEventScreenDrag):
@@ -41,15 +29,3 @@ func _touch_to_action(touch: InputEventScreenTouch):
 			Input.action_release(player + "_move_to")
 		else:
 			Input.action_release(player + "_charge")
-
-
-func _is_control_side(x_position: float):
-	match side:
-		Globals.Side.LEFT:
-			return x_position < _center.x
-		Globals.Side.RIGHT:
-			return x_position > _center.x
-
-
-func set_side(new_side: int):
-	self.side = new_side
