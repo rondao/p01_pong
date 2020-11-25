@@ -7,8 +7,8 @@ signal right_scored()
 export(PackedScene) var GoalSfx: PackedScene
 
 onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
-
 onready var _ball := $Ball as Ball
+onready var _center := $Center as Node2D
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER}
 var _game_type: int = GameType.NONE
@@ -58,7 +58,7 @@ func _ready():
 		GameType.LOCAL_AI:
 			_configure_game_as_local_ai()
 
-	_ball.restart(Vector2.RIGHT)
+	_ball.restart(_center.position, Vector2.RIGHT)
 
 
 func _physics_process(_delta: float):
@@ -131,9 +131,9 @@ func _on_Ball_collided_goal(side: int):
 	else:
 		match side:
 			Globals.Side.LEFT:
-				_ball.restart(Vector2.RIGHT)
+				_ball.restart(_center.position, Vector2.RIGHT)
 			Globals.Side.RIGHT:
-				_ball.restart(Vector2.LEFT)
+				_ball.restart(_center.position, Vector2.LEFT)
 
 
 func _spawn_goal_sfx():

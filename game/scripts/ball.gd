@@ -34,8 +34,6 @@ onready var _animation := $Animation as AnimationPlayer
 
 const BALL_SPAWNING_ANIMATION := "ball_spawn"
 
-onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
-
 
 func _draw():
 	if _trail_enabled:
@@ -69,8 +67,8 @@ func _physics_process(delta: float):
 			_collided_goal(Globals.Side.RIGHT)
 
 
-func restart(side: Vector2):
-	position = _center;
+func restart(new_position: Vector2, side: Vector2):
+	position = new_position;
 	
 	side.y = rand_range(-1.25, 1.25)
 	_velocity = start_velocity * side.normalized()

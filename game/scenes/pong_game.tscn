@@ -16,17 +16,15 @@ extents = Vector2( 10, 540 )
 script = ExtResource( 5 )
 GoalSfx = ExtResource( 7 )
 
+[node name="Ball" parent="." instance=ExtResource( 3 )]
+position = Vector2( 960, 540 )
+
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 50, 540 )
 
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1870, 540 )
 rotation = 3.14159
-
-[node name="Walls" parent="." instance=ExtResource( 2 )]
-
-[node name="Ball" parent="." instance=ExtResource( 3 )]
-position = Vector2( 960, 540 )
 
 [node name="LeftGoal" type="StaticBody2D" parent="."]
 position = Vector2( -40, 540 )
@@ -46,11 +44,16 @@ __meta__ = {
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightGoal"]
 shape = SubResource( 1 )
 
+[node name="Walls" parent="." instance=ExtResource( 2 )]
+
 [node name="NetLine" type="Node2D" parent="."]
 position = Vector2( 960, 0 )
 script = ExtResource( 4 )
 endPoint = Vector2( 0, 1080 )
 dashStep = 0.011
+
+[node name="Center" type="Node2D" parent="."]
+position = Vector2( 960, 540 )
 
 [node name="Score" type="CenterContainer" parent="."]
 margin_top = 25.0
