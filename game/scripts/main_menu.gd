@@ -3,6 +3,14 @@ extends ColorRect
 signal game_started()
 
 
+func _ready():
+	GameServer.connect("server_connected", self, "_enable_ranked_game")
+
+
+func _enable_ranked_game():
+	($Margin/HBox/MainButtons/PlayRanked as Button).disabled = false
+
+
 func _on_PlayAgainstAI_pressed():
 	yield(_check_user_options_set(), "completed")
 	_start_game(PongGame.create_game(PongGame.GameType.LOCAL_AI))

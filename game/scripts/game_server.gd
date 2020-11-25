@@ -1,5 +1,7 @@
 extends Node
 
+
+signal server_connected()
 signal game_found()
 
 const NAKAMA_IP_SERVER := "192.168.0.21"
@@ -28,18 +30,25 @@ enum OpCodes {
 
 
 func _ready():
-	_session = yield(register_async(), "completed")
-	yield(connect_to_server_async(), "completed")
+	_connect_to_server()
 
 
-func register_async() -> NakamaSession:
+func _connect_to_server():
+	while _session == null:
+		_session = yield(_register_async(), "completed")
+		yield(get_tree().create_timer(10), "timeout")
+	yield(_connect_to_server_async(), "completed")
+	emit_signal("server_connected")
+
+
+func _register_async() -> NakamaSession:
 	var id = OS.get_unique_id() if OS.get_name() != "HTML5" else "default_id"
 
 	var session: NakamaSession = yield(_client.authenticate_custom_async(id), "completed")
 	return session if not session.is_exception() else null
 
 
-func connect_to_server_async():
+func _connect_to_server_async():
 	_socket = Nakama.create_socket_from(_client)
 
 	var result: NakamaAsyncResult = yield(_socket.connect_async(_session), "completed")
@@ -53,7 +62,7 @@ func connect_to_server_async():
 
 
 func is_network_game():
-	return _socket.is_connected_to_host()
+	return _socket.is_connected_to_host() if _socket != null else false
 
 
 func request_matchmaking():
