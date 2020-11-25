@@ -4,7 +4,11 @@ class_name PongGame
 signal left_scored()
 signal right_scored()
 
+export(PackedScene) var GoalSfx: PackedScene
+
+onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
 onready var _ball := $Ball as Ball
+onready var _center := $Center as Node2D
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER}
 var _game_type: int = GameType.NONE
@@ -53,6 +57,8 @@ func _ready():
 			_configure_game_as_local_multiplayer()
 		GameType.LOCAL_AI:
 			_configure_game_as_local_ai()
+
+	_ball.restart(_center.position, Vector2.RIGHT)
 
 
 func _physics_process(_delta: float):
@@ -109,6 +115,9 @@ func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 
 
 func _on_Ball_collided_goal(side: int):
+	_spawn_goal_sfx()
+	_audio_goal.play()
+
 	match side:
 		Globals.Side.LEFT:
 			_right_score += 1
@@ -117,19 +126,38 @@ func _on_Ball_collided_goal(side: int):
 			_left_score += 1
 			emit_signal("left_scored", _left_score)
 
+	if _has_game_ended():
+		_ball.queue_free()
+	else:
+		match side:
+			Globals.Side.LEFT:
+				_ball.restart(_center.position, Vector2.RIGHT)
+			Globals.Side.RIGHT:
+				_ball.restart(_center.position, Vector2.LEFT)
+
+
+func _spawn_goal_sfx():
+	var sfx := GoalSfx.instance() as Node2D
+	sfx.position = _ball.position
+	add_child(sfx)
+
+
+func _has_game_ended() -> bool:
 	if _left_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
 				_popup_end_game(true, Globals.Side.LEFT)
 			Globals.Side.RIGHT:
 				_popup_end_game(false, Globals.Side.LEFT)
+		return true
 	elif _right_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
 				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
 				_popup_end_game(true, Globals.Side.RIGHT)
-
+		return true
+	return false
 
 
 func _on_Ball_collided_paddle(side: int):

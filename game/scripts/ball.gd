@@ -5,7 +5,6 @@ signal collided_goal()
 signal collided_paddle()
 
 export(PackedScene) var CollisionSfx: PackedScene
-export(PackedScene) var GoalSfx: PackedScene
 
 export(float) var radius: float
 
@@ -30,17 +29,10 @@ var _trail_enabled := false
 onready var _audio_hit := $AudioHit as AudioStreamPlayer2D
 onready var _audio_power_hit := $AudioPowerHit as AudioStreamPlayer2D
 onready var _audio_wall_bounce := $AudioWallBounce as AudioStreamPlayer2D
-onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
 
 onready var _animation := $Animation as AnimationPlayer
 
 const BALL_SPAWNING_ANIMATION := "ball_spawn"
-
-onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
-
-
-func _ready():
-	_reset(Vector2.RIGHT)
 
 
 func _draw():
@@ -73,6 +65,18 @@ func _physics_process(delta: float):
 			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
 			_collided_goal(Globals.Side.RIGHT)
+
+
+func restart(new_position: Vector2, side: Vector2):
+	position = new_position;
+	
+	side.y = rand_range(-1.25, 1.25)
+	_velocity = start_velocity * side.normalized()
+	_bonus_velocity = 1.0
+	_spin = 0.0
+
+	_hide_trail()
+	_animation.play(BALL_SPAWNING_ANIMATION)
 
 
 func _collided_goal(side: int):
@@ -142,18 +146,6 @@ func _collide_walls(collision: KinematicCollision2D):
 	_spin = -_spin
 
 
-func _reset(side: Vector2):
-	position = _center;
-	
-	side.y = rand_range(-1.25, 1.25)
-	_velocity = start_velocity * side.normalized()
-	_bonus_velocity = 1.0
-	_spin = 0.0
-
-	_hide_trail()
-	_animation.play(BALL_SPAWNING_ANIMATION)
-
-
 func _show_trail():
 	_trail_enabled = true
 	_trail.enable()
@@ -171,28 +163,3 @@ func _spawn_collision_sfx():
 	sfx.position = position
 	get_parent().add_child(sfx)
 
-
-func _spawn_goal_sfx(side : int):
-	var sfx := GoalSfx.instance() as Node2D
-
-	sfx.z_index = -1
-	sfx.position = position
-	match side:
-		Globals.Side.LEFT:
-			sfx.rotation = 0
-		Globals.Side.RIGHT:
-			sfx.rotation = PI
-
-	get_parent().add_child(sfx)
-
-
-func _on_PongGame_left_scored(_score: int):
-	_spawn_goal_sfx(Globals.Side.RIGHT)
-	_audio_goal.play()
-	_reset(Vector2.RIGHT)
-
-
-func _on_PongGame_right_scored(_score: int):
-	_spawn_goal_sfx(Globals.Side.LEFT)
-	_audio_goal.play()
-	_reset(Vector2.LEFT)

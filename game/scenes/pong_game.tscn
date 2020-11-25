@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game/scenes/paddle.tscn" type="PackedScene" id=1]
 [ext_resource path="res://game/scenes/walls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game/scenes/ball.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/scripts/net_line.gd" type="Script" id=4]
 [ext_resource path="res://game/scripts/pong_game.gd" type="Script" id=5]
+[ext_resource path="res://game/audio/goal.wav" type="AudioStream" id=6]
 [ext_resource path="res://game/scenes/goal_sfx.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/scenes/score.tscn" type="PackedScene" id=8]
 
@@ -13,6 +14,10 @@ extents = Vector2( 10, 540 )
 
 [node name="PongGame" type="Node2D"]
 script = ExtResource( 5 )
+GoalSfx = ExtResource( 7 )
+
+[node name="Ball" parent="." instance=ExtResource( 3 )]
+position = Vector2( 960, 540 )
 
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 50, 540 )
@@ -20,12 +25,6 @@ position = Vector2( 50, 540 )
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1870, 540 )
 rotation = 3.14159
-
-[node name="Walls" parent="." instance=ExtResource( 2 )]
-
-[node name="Ball" parent="." instance=ExtResource( 3 )]
-position = Vector2( 960, 540 )
-GoalSfx = ExtResource( 7 )
 
 [node name="LeftGoal" type="StaticBody2D" parent="."]
 position = Vector2( -40, 540 )
@@ -45,11 +44,16 @@ __meta__ = {
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightGoal"]
 shape = SubResource( 1 )
 
+[node name="Walls" parent="." instance=ExtResource( 2 )]
+
 [node name="NetLine" type="Node2D" parent="."]
 position = Vector2( 960, 0 )
 script = ExtResource( 4 )
 endPoint = Vector2( 0, 1080 )
 dashStep = 0.011
+
+[node name="Center" type="Node2D" parent="."]
+position = Vector2( 960, 540 )
 
 [node name="Score" type="CenterContainer" parent="."]
 margin_top = 25.0
@@ -76,9 +80,11 @@ anchor_bottom = 0.0
 margin_left = 133.0
 margin_right = 216.0
 margin_bottom = 165.0
-[connection signal="left_scored" from="." to="Ball" method="_on_PongGame_left_scored"]
+
+[node name="AudioGoal" type="AudioStreamPlayer2D" parent="."]
+pause_mode = 2
+stream = ExtResource( 6 )
 [connection signal="left_scored" from="." to="Score/HBoxContainer/LeftScore" method="_on_PongGame_left_scored"]
-[connection signal="right_scored" from="." to="Ball" method="_on_PongGame_right_scored"]
 [connection signal="right_scored" from="." to="Score/HBoxContainer/RightScore" method="_on_PongGame_right_scored"]
 [connection signal="collided_goal" from="Ball" to="." method="_on_Ball_collided_goal"]
 [connection signal="collided_paddle" from="Ball" to="." method="_on_Ball_collided_paddle"]
