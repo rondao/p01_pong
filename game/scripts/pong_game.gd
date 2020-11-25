@@ -113,20 +113,25 @@ func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
 
 
 func _on_Ball_collided_goal(side: int):
+	_spawn_goal_sfx()
+	_audio_goal.play()
+
 	match side:
 		Globals.Side.LEFT:
 			_right_score += 1
-			_spawn_goal_sfx(Globals.Side.RIGHT)
-			_ball._reset(Vector2.RIGHT)
 			emit_signal("right_scored", _right_score)
+			_ball._reset(Vector2.RIGHT)
 		Globals.Side.RIGHT:
 			_left_score += 1
-			_spawn_goal_sfx(Globals.Side.LEFT)
-			_audio_goal.play()
-			_ball._reset(Vector2.LEFT)
 			emit_signal("left_scored", _left_score)
-	_audio_goal.play()
+			_ball._reset(Vector2.LEFT)
 	_has_game_ended()
+
+
+func _spawn_goal_sfx():
+	var sfx := GoalSfx.instance() as Node2D
+	sfx.position = _ball.position
+	add_child(sfx)
 
 
 func _has_game_ended():
@@ -192,17 +197,3 @@ func _end_game():
 	get_tree().get_root().remove_child(self)
 
 	self.queue_free()
-
-
-func _spawn_goal_sfx(side : int):
-	var sfx := GoalSfx.instance() as Node2D
-
-	sfx.z_index = -1
-	sfx.position = _ball.position
-	match side:
-		Globals.Side.LEFT:
-			sfx.rotation = 0
-		Globals.Side.RIGHT:
-			sfx.rotation = PI
-
-	add_child(sfx)
