@@ -67,6 +67,7 @@ margin_left = 623.0
 margin_right = 1196.0
 margin_bottom = 668.0
 size_flags_horizontal = 3
+disabled = true
 text = "PLAY_RANKED"
 
 [node name="Rankings" type="Button" parent="Margin/HBox/MainButtons"]
