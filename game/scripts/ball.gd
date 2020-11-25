@@ -37,10 +37,6 @@ const BALL_SPAWNING_ANIMATION := "ball_spawn"
 onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
 
-func _ready():
-	_reset(Vector2.RIGHT)
-
-
 func _draw():
 	if _trail_enabled:
 		draw_circle(Vector2.ZERO, radius + 2, Color.red)
@@ -71,6 +67,18 @@ func _physics_process(delta: float):
 			_collided_goal(Globals.Side.LEFT)
 		elif collider.name == "RightGoal":
 			_collided_goal(Globals.Side.RIGHT)
+
+
+func restart(side: Vector2):
+	position = _center;
+	
+	side.y = rand_range(-1.25, 1.25)
+	_velocity = start_velocity * side.normalized()
+	_bonus_velocity = 1.0
+	_spin = 0.0
+
+	_hide_trail()
+	_animation.play(BALL_SPAWNING_ANIMATION)
 
 
 func _collided_goal(side: int):
@@ -138,18 +146,6 @@ func _after_paddle_collision():
 func _collide_walls(collision: KinematicCollision2D):
 	_velocity = _velocity.bounce(collision.normal)
 	_spin = -_spin
-
-
-func _reset(side: Vector2):
-	position = _center;
-	
-	side.y = rand_range(-1.25, 1.25)
-	_velocity = start_velocity * side.normalized()
-	_bonus_velocity = 1.0
-	_spin = 0.0
-
-	_hide_trail()
-	_animation.play(BALL_SPAWNING_ANIMATION)
 
 
 func _show_trail():

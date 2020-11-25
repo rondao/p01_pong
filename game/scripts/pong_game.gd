@@ -58,6 +58,8 @@ func _ready():
 		GameType.LOCAL_AI:
 			_configure_game_as_local_ai()
 
+	_ball.restart(Vector2.RIGHT)
+
 
 func _physics_process(_delta: float):
 	if _game_type == GameType.NETWORK_MULTIPLAYER:
@@ -120,12 +122,18 @@ func _on_Ball_collided_goal(side: int):
 		Globals.Side.LEFT:
 			_right_score += 1
 			emit_signal("right_scored", _right_score)
-			_ball._reset(Vector2.RIGHT)
 		Globals.Side.RIGHT:
 			_left_score += 1
 			emit_signal("left_scored", _left_score)
-			_ball._reset(Vector2.LEFT)
-	_has_game_ended()
+
+	if _has_game_ended():
+		_ball.queue_free()
+	else:
+		match side:
+			Globals.Side.LEFT:
+				_ball.restart(Vector2.RIGHT)
+			Globals.Side.RIGHT:
+				_ball.restart(Vector2.LEFT)
 
 
 func _spawn_goal_sfx():
@@ -134,19 +142,22 @@ func _spawn_goal_sfx():
 	add_child(sfx)
 
 
-func _has_game_ended():
+func _has_game_ended() -> bool:
 	if _left_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
 				_popup_end_game(true, Globals.Side.LEFT)
 			Globals.Side.RIGHT:
 				_popup_end_game(false, Globals.Side.LEFT)
+		return true
 	elif _right_score == goals_to_win:
 		match player_side:
 			Globals.Side.LEFT:
 				_popup_end_game(false, Globals.Side.RIGHT)
 			Globals.Side.RIGHT:
 				_popup_end_game(true, Globals.Side.RIGHT)
+		return true
+	return false
 
 
 func _on_Ball_collided_paddle(side: int):
