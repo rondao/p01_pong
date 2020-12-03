@@ -36,7 +36,11 @@ static func create_game(game_type: int, _player_side: int = Globals.Side.LEFT) -
 
 func _ready():
 	if OS.has_touchscreen_ui_hint():
-		_add_touchscreen_input()
+		if _game_type == GameType.LOCAL_MULTIPLAYER:
+			_add_touchscreen_input(Globals.MobileInput.ONE_HAND, Globals.Side.LEFT, "player_01")
+			_add_touchscreen_input(Globals.MobileInput.ONE_HAND, Globals.Side.RIGHT, "player_02")
+		else:
+			_add_touchscreen_input(UserPreferences.mobile_input, player_side, "player_01")
 
 	match player_side:
 		Globals.Side.LEFT:
@@ -66,16 +70,16 @@ func _physics_process(_delta: float):
 		GameServer.send_paddle_and_ball_state(_my_paddle.position, _my_paddle.charge, _ball.position)
 
 
-func _add_touchscreen_input():
+func _add_touchscreen_input(mobile_input_type: int, side: int, player: String):
 	var mobile_input
-	match UserPreferences.mobile_input:
+	match mobile_input_type:
 		Globals.MobileInput.ONE_HAND:
 			mobile_input = (load("res://game/scenes/mobile_inputs/mobile_input_one_hand.tscn") as PackedScene).instance()
 		Globals.MobileInput.TWO_HANDS:
 			mobile_input = (load("res://game/scenes/mobile_inputs/mobile_input_two_hands.tscn") as PackedScene).instance()
 
-	if GameServer.is_network_game():
-		mobile_input.set_side(player_side)
+	mobile_input.set_player(player)
+	mobile_input.set_side(side)
 
 	add_child(mobile_input)
 
