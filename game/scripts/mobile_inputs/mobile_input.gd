@@ -48,3 +48,7 @@ func _is_control_side(x_position: float):
 
 func set_side(new_side: int):
 	self.side = new_side
+
+
+func set_player(new_player: String):
+	self.player = new_player
