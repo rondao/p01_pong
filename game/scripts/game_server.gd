@@ -34,9 +34,11 @@ func _ready():
 
 
 func _connect_to_server():
+	_session = yield(_register_async(), "completed")
 	while _session == null:
-		_session = yield(_register_async(), "completed")
 		yield(get_tree().create_timer(10), "timeout")
+		_session = yield(_register_async(), "completed")
+
 	yield(_connect_to_server_async(), "completed")
 	emit_signal("server_connected")
 
