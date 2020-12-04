@@ -104,7 +104,6 @@ func _configure_game_as_local_ai():
 
 
 func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
-	print(OS.get_ticks_msec())
 	match match_state.op_code:
 		GameServer.OpCodes.SET_PADDLE_BALL_STATE:
 			var data: Dictionary = str2var(match_state.data)
