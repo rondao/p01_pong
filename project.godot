@@ -109,7 +109,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://game/scripts/paddle.gd"
 }, {
-"base": "Node2D",
+"base": "Control",
 "class": "PongGame",
 "language": "GDScript",
 "path": "res://game/scripts/pong_game.gd"

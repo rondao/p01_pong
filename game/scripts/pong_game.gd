@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 class_name PongGame
 
 signal left_scored()
@@ -8,7 +8,7 @@ export(PackedScene) var GoalSfx: PackedScene
 
 onready var _audio_goal := $AudioGoal as AudioStreamPlayer2D
 onready var _ball := $Ball as Ball
-onready var _center := $Center as Node2D
+onready var _center := rect_size / 2
 
 enum GameType {NONE, LOCAL_AI, LOCAL_MULTIPLAYER, NETWORK_MULTIPLAYER}
 var _game_type: int = GameType.NONE
@@ -62,7 +62,7 @@ func _ready():
 		GameType.LOCAL_AI:
 			_configure_game_as_local_ai()
 
-	_ball.restart(_center.position, Vector2.RIGHT)
+	_ball.restart(_center, Vector2.RIGHT)
 
 
 func _physics_process(_delta: float):
@@ -104,6 +104,7 @@ func _configure_game_as_local_ai():
 
 
 func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):
+	print(OS.get_ticks_msec())
 	match match_state.op_code:
 		GameServer.OpCodes.SET_PADDLE_BALL_STATE:
 			var data: Dictionary = str2var(match_state.data)
@@ -135,9 +136,9 @@ func _on_Ball_collided_goal(side: int):
 	else:
 		match side:
 			Globals.Side.LEFT:
-				_ball.restart(_center.position, Vector2.RIGHT)
+				_ball.restart(_center, Vector2.RIGHT)
 			Globals.Side.RIGHT:
-				_ball.restart(_center.position, Vector2.LEFT)
+				_ball.restart(_center, Vector2.LEFT)
 
 
 func _spawn_goal_sfx():
@@ -178,7 +179,7 @@ func _adjust_ball_latency(network_position: Vector2):
 			Globals.Side.LEFT:
 				_ball.latency_speed_adjustment = _ball.position.x / network_position.x
 			Globals.Side.RIGHT:
-				_ball.latency_speed_adjustment = (_ball.position.x - get_viewport().size.x) / (network_position.x - get_viewport().size.x)
+				_ball.latency_speed_adjustment = (_ball.position.x - rect_size.x) / (network_position.x - rect_size.x)
 
 
 func _popup_end_game(won: bool, side: int):
