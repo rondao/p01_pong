@@ -14,4 +14,5 @@ data_*/
 # APK/EXE build files
 p01_pong.apk
 p01_pong.exe
+p01_pong.x86_64
 p01_pong.pck
