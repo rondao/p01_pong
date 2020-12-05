@@ -4,11 +4,11 @@ extends Node
 signal server_connected()
 signal game_found()
 
-const NAKAMA_IP_SERVER := "192.168.0.21"
+const NAKAMA_IP_SERVER := "20.62.247.92"
 
 onready var _client := Nakama.create_client("defaultkey",
 											NAKAMA_IP_SERVER,
-											30050,
+											7350,
 											"http",
 											Nakama.DEFAULT_TIMEOUT,
 											NakamaLogger.LOG_LEVEL.VERBOSE)
@@ -63,7 +63,11 @@ func _connect_to_server_async():
 		_socket.connect("received_channel_message", self, "_on_NamakaSocket_received_channel_message")
 
 
-func is_network_game():
+func is_connected_to_server() -> bool:
+	return _socket != null
+
+
+func is_network_game() -> bool:
 	return not _match_id.empty()
 
 
