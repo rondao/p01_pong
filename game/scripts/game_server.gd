@@ -64,7 +64,7 @@ func _connect_to_server_async():
 
 
 func is_network_game():
-	return _socket.is_connected_to_host() if _socket != null else false
+	return not _match_id.empty()
 
 
 func request_matchmaking():
@@ -80,6 +80,7 @@ func leave_current_match():
 	if leave.is_exception():
 		print("Exception occured on GameServer.leave_current_match: %s" % leave)
 
+	_match_id = ""
 	_players.clear()
 
 
