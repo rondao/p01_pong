@@ -4,7 +4,10 @@ signal game_started()
 
 
 func _ready():
-	GameServer.connect("server_connected", self, "_enable_ranked_game")
+	if GameServer.is_connected_to_server():
+		_enable_ranked_game()
+	else:
+		GameServer.connect("server_connected", self, "_enable_ranked_game")
 
 
 func _enable_ranked_game():
