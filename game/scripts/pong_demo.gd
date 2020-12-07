@@ -4,7 +4,7 @@ var _ball_scene := load("res://game/scenes/ball.tscn") as PackedScene
 
 
 func _ready():
-	pass
+	randomize()
 
 
 func _on_Timer_timeout():
