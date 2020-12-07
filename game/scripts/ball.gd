@@ -163,3 +163,6 @@ func _spawn_collision_sfx():
 	sfx.position = position
 	get_parent().add_child(sfx)
 
+
+func free_on_collision(_side: int):
+	queue_free()
