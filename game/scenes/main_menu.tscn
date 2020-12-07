@@ -19,11 +19,18 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="PongDemo" parent="." instance=ExtResource( 2 )]
+[node name="Index1" type="Node2D" parent="."]
+z_index = 1
 
-[node name="Margin" type="MarginContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="PongDemo" parent="Index1" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+
+[node name="Margin" type="MarginContainer" parent="Index1"]
+margin_right = 1920.0
+margin_bottom = 1080.0
 custom_constants/margin_right = 200
 custom_constants/margin_top = 50
 custom_constants/margin_left = 200
@@ -32,7 +39,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBox" type="VBoxContainer" parent="Margin"]
+[node name="HBox" type="VBoxContainer" parent="Index1/Margin"]
 margin_left = 200.0
 margin_top = 50.0
 margin_right = 1720.0
@@ -42,14 +49,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GameName" type="Label" parent="Margin/HBox"]
+[node name="GameName" type="Label" parent="Index1/Margin/HBox"]
 margin_right = 1520.0
 margin_bottom = 212.0
 custom_fonts/font = SubResource( 2 )
 text = "GAME_NAME"
 align = 1
 
-[node name="MainButtons" type="HBoxContainer" parent="Margin/HBox"]
+[node name="MainButtons" type="HBoxContainer" parent="Index1/Margin/HBox"]
 margin_top = 712.0
 margin_right = 1520.0
 margin_bottom = 930.0
@@ -59,13 +66,13 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="PlayAgainstAI" type="Button" parent="Margin/HBox/MainButtons"]
+[node name="PlayAgainstAI" type="Button" parent="Index1/Margin/HBox/MainButtons"]
 margin_right = 373.0
 margin_bottom = 218.0
 size_flags_horizontal = 3
 text = "PLAY_AGAINST_AI"
 
-[node name="PlayRanked" type="Button" parent="Margin/HBox/MainButtons"]
+[node name="PlayRanked" type="Button" parent="Index1/Margin/HBox/MainButtons"]
 margin_left = 573.0
 margin_right = 946.0
 margin_bottom = 218.0
@@ -73,12 +80,12 @@ size_flags_horizontal = 3
 disabled = true
 text = "PLAY_RANKED"
 
-[node name="Rankings" type="Button" parent="Margin/HBox/MainButtons"]
+[node name="Rankings" type="Button" parent="Index1/Margin/HBox/MainButtons"]
 margin_left = 1146.0
 margin_right = 1520.0
 margin_bottom = 218.0
 size_flags_horizontal = 3
 text = "RANKINGS"
-[connection signal="pressed" from="Margin/HBox/MainButtons/PlayAgainstAI" to="." method="_on_PlayAgainstAI_pressed"]
-[connection signal="pressed" from="Margin/HBox/MainButtons/PlayRanked" to="." method="_on_PlayRanked_pressed"]
-[connection signal="pressed" from="Margin/HBox/MainButtons/Rankings" to="." method="_on_Rankings_pressed"]
+[connection signal="pressed" from="Index1/Margin/HBox/MainButtons/PlayAgainstAI" to="." method="_on_PlayAgainstAI_pressed"]
+[connection signal="pressed" from="Index1/Margin/HBox/MainButtons/PlayRanked" to="." method="_on_PlayRanked_pressed"]
+[connection signal="pressed" from="Index1/Margin/HBox/MainButtons/Rankings" to="." method="_on_Rankings_pressed"]

@@ -11,7 +11,7 @@ func _ready():
 
 
 func _enable_ranked_game():
-	($Margin/HBox/MainButtons/PlayRanked as Button).disabled = false
+	($Index1/Margin/HBox/MainButtons/PlayRanked as Button).disabled = false
 
 
 func _on_PlayAgainstAI_pressed():
