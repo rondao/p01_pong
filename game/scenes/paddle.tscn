@@ -8,6 +8,7 @@ extents = Vector2( 100, 1 )
 [node name="Paddle" type="KinematicBody2D" groups=[
 "paddles",
 ]]
+collision_mask = 12
 script = ExtResource( 1 )
 speed = 600
 

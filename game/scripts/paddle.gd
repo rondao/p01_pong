@@ -2,7 +2,7 @@ extends KinematicBody2D
 class_name Paddle
 
 enum PlayerType {NONE, AI, HUMAN_01, HUMAN_02, NETWORK}
-var player_type: int = PlayerType.NONE
+export(PlayerType) var player_type: int = PlayerType.NONE
 
 var paddle_type: int
 
