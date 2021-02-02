@@ -3,7 +3,7 @@ extends PopupPanel
 
 func _mobile_input_selected(mobile_input: int):
 	UserPreferences.save_mobile_input(mobile_input)
-	hide()
+	queue_free()
 
 
 func _on_OneHand_pressed():

@@ -3,7 +3,7 @@ extends PopupPanel
 
 func _paddle_selected(paddle_type: int):
 	UserPreferences.save_paddle_type(paddle_type)
-	hide()
+	queue_free()
 
 
 func _on_Geometric_pressed():
