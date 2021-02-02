@@ -11,7 +11,7 @@ func _ready():
 
 
 func _enable_ranked_game():
-	($Index1/Margin/HBox/MainButtons/PlayRanked as Button).disabled = false
+	($MenuLayer/Margin/HBox/MainButtons/PlayRanked as Button).disabled = false
 
 
 func _on_PlayAgainstAI_pressed():
@@ -34,6 +34,12 @@ func _on_Rankings_pressed():
 	_start_game(PongGame.create_game(PongGame.GameType.LOCAL_MULTIPLAYER))
 
 
+func _on_Settings_pressed():
+	yield(_popup_paddle_type_selection(), "popup_hide")
+	if OS.has_touchscreen_ui_hint():
+		yield(_popup_mobile_input_selection(), "popup_hide")
+
+
 func _on_Network_game_found(side: int, rng_seed: int):
 	seed(rng_seed)
 	_start_game(PongGame.create_game(PongGame.GameType.NETWORK_MULTIPLAYER, side))
@@ -54,7 +60,7 @@ func _check_user_options_set():
 
 func _popup_paddle_type_selection() -> PopupPanel:
 	var paddle_selection_popup := (load("res://game/scenes/paddle_selection.tscn") as PackedScene).instance() as PopupPanel
-	get_tree().get_root().add_child(paddle_selection_popup)
+	$PopupLayer.add_child(paddle_selection_popup)
 
 	paddle_selection_popup.popup()
 	return paddle_selection_popup
@@ -62,7 +68,7 @@ func _popup_paddle_type_selection() -> PopupPanel:
 
 func _popup_mobile_input_selection() -> PopupPanel:
 	var mobile_input_selection_popup := (load("res://game/scenes/mobile_input_selection.tscn") as PackedScene).instance() as PopupPanel
-	get_tree().get_root().add_child(mobile_input_selection_popup)
+	$PopupLayer.add_child(mobile_input_selection_popup)
 
 	mobile_input_selection_popup.popup()
 	return mobile_input_selection_popup
@@ -70,7 +76,7 @@ func _popup_mobile_input_selection() -> PopupPanel:
 
 func _popup_searching_game() -> PopupPanel:
 	var loading_popup := (load("res://game/scenes/searching_game.tscn") as PackedScene).instance() as PopupPanel
-	get_tree().get_root().add_child(loading_popup)
+	$PopupLayer.add_child(loading_popup)
 
 	loading_popup.popup()
 	return loading_popup
