@@ -1,7 +1,7 @@
 extends KinematicBody2D
 class_name Paddle
 
-enum PlayerType {NONE, AI, HUMAN_01, HUMAN_02, NETWORK}
+enum PlayerType {NONE, AI_01, AI_02, HUMAN_01, HUMAN_02, NETWORK}
 export(PlayerType) var player_type: int = PlayerType.NONE
 
 var paddle_type: int
@@ -20,10 +20,9 @@ func _ready():
 
 
 func _process(delta: float):
-	match player_type:
-		PlayerType.HUMAN_01:
+	if player_type == PlayerType.AI_01 or player_type == PlayerType.HUMAN_01:
 			_handle_input("player_01", delta)
-		PlayerType.HUMAN_02:
+	elif player_type == PlayerType.AI_02 or player_type == PlayerType.HUMAN_02:
 			_handle_input("player_02", delta)
 
 	if _move_to:
@@ -31,7 +30,7 @@ func _process(delta: float):
 
 
 func _physics_process(delta: float):
-	if player_type == PlayerType.HUMAN_01 or player_type == PlayerType.HUMAN_02:
+	if not player_type == PlayerType.NETWORK:
 		var collision := move_and_collide(velocity * delta * (1.0 - charge))
 		if collision:
 			var collider := collision.collider as Node
@@ -39,7 +38,7 @@ func _physics_process(delta: float):
 				_collide_ball()
 			elif collider.is_in_group("walls"):
 				_collide_walls()
-	elif player_type == PlayerType.NETWORK:
+	else:
 		position += velocity * delta * (1.0 - charge)
 
 

@@ -100,7 +100,12 @@ func _configure_game_as_local_multiplayer():
 
 func _configure_game_as_local_ai():
 	_my_paddle.set_player_type(Paddle.PlayerType.HUMAN_01)
-	_opponent_paddle.set_player_type(Paddle.PlayerType.AI)
+	_opponent_paddle.set_player_type(Paddle.PlayerType.AI_02)
+
+	var ai := Node2D.new()
+	ai.set_script(load("res://game/scripts/ai.gd"))
+	(ai as AI).configure_ai(_ball, _my_paddle, _opponent_paddle)
+	add_child(ai)
 
 
 func _on_NakamaSocket_received_match_state(match_state: NakamaRTAPI.MatchData):

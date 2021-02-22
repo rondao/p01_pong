@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node2D",
+"class": "AI",
+"language": "GDScript",
+"path": "res://game/scripts/ai.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Ball",
 "language": "GDScript",
@@ -115,6 +120,7 @@ _global_script_classes=[ {
 "path": "res://game/scripts/pong_game.gd"
 } ]
 _global_script_class_icons={
+"AI": "",
 "Ball": "",
 "BallTrail": "",
 "EndGamePopup": "",
