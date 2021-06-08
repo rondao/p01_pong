@@ -1,13 +1,18 @@
 extends Node2D
+class_name GoalSfx
 
-onready var _particles := $Particles2D as Particles2D
+onready var particles := $Particles2D as Particles2D
 
 
-func _process(_delta: float):
-	if not _particles.emitting:
+static func create() -> GoalSfx:
+	return (load("res://src/pong/sfx/goal_sfx.tscn") as PackedScene).instance() as GoalSfx
+
+
+func _process(_delta: float) -> void:
+	if not particles.emitting:
 		queue_free()
 
 
-func _ready():
-	_particles.emitting = true
+func _ready() -> void:
+	particles.emitting = true
 

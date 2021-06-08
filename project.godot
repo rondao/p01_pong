@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/pong/ball/ball_trail.gd"
 }, {
+"base": "Node2D",
+"class": "CollisionSfx",
+"language": "GDScript",
+"path": "res://src/pong/sfx/collision_sfx.gd"
+}, {
 "base": "PopupPanel",
 "class": "EndGamePopup",
 "language": "GDScript",
@@ -33,6 +38,11 @@ _global_script_classes=[ {
 "class": "Globals",
 "language": "GDScript",
 "path": "res://src/globals.gd"
+}, {
+"base": "Node2D",
+"class": "GoalSfx",
+"language": "GDScript",
+"path": "res://src/pong/sfx/goal_sfx.gd"
 }, {
 "base": "Node2D",
 "class": "MobileInput",
@@ -143,8 +153,10 @@ _global_script_class_icons={
 "AI": "",
 "Ball": "",
 "BallTrail": "",
+"CollisionSfx": "",
 "EndGamePopup": "",
 "Globals": "",
+"GoalSfx": "",
 "MobileInput": "",
 "MobileInputSelection": "",
 "MobileOneHandInput": "",

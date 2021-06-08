@@ -2,9 +2,6 @@
 
 [ext_resource path="res://src/pong/sfx/collision_sfx.gd" type="Script" id=1]
 
-
-
-
 [sub_resource type="Animation" id=1]
 resource_name = "collision_sfx"
 length = 0.1
@@ -38,7 +35,6 @@ tracks/1/keys = {
 modulate = Color( 1, 1, 1, 0.894353 )
 scale = Vector2( 0.136168, 0.136168 )
 script = ExtResource( 1 )
-radius = 50.0
 
 [node name="Animation" type="AnimationPlayer" parent="."]
 autoplay = "collision_sfx"

@@ -1,10 +1,16 @@
 extends Node2D
+class_name CollisionSfx
 
-export(float) var radius
+const RADIUS := 50
 
-func _draw():
-	draw_circle(Vector2.ZERO, radius, Color.white)
 
-# warning-ignore:unused_argument
-func _on_Animation_animation_finished(anim_name):
+static func create() -> CollisionSfx:
+	return (load("res://src/pong/sfx/collision_sfx.tscn") as PackedScene).instance() as CollisionSfx
+
+
+func _draw() -> void:
+	draw_circle(Vector2.ZERO, RADIUS, Color.white)
+
+
+func _on_Animation_animation_finished(_anim_name: String) -> void:
 	queue_free()

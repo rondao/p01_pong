@@ -2,8 +2,6 @@
 
 [ext_resource path="res://src/pong/paddle/paddle.gd" type="Script" id=1]
 
-
-
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 100, 1 )
 
@@ -12,7 +10,6 @@ extents = Vector2( 100, 1 )
 ]]
 collision_mask = 12
 script = ExtResource( 1 )
-speed = 600
 
 [node name="Polygon" type="Polygon2D" parent="."]
 offset = Vector2( -25, -100 )

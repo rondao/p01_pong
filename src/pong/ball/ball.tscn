@@ -5,7 +5,7 @@
 
 [sub_resource type="CircleShape2D" id=1]
 
-[sub_resource type="Gradient" id=2]
+[sub_resource type="Gradient" id=7]
 colors = PoolColorArray( 1, 0, 0, 0, 1, 0, 0, 1 )
 
 [sub_resource type="AudioStreamOGGVorbis" id=3]
@@ -54,25 +54,17 @@ scale = Vector2( 2.5, 2.5 )
 collision_layer = 2
 collision_mask = 2147483661
 script = ExtResource( 1 )
-radius = 15.0
-bounce_accel = 1.2
-start_velocity = Vector2( 500, 300 )
-bonus_velocity_minimum = 0.65
-bonus_velocity_range = 0.8
-angular_y_velocity = 700.0
-maximum_x_velocity = 1600.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
 [node name="Trail" type="Line2D" parent="."]
 z_index = -1
+points = PoolVector2Array( 241.694, 366.223 )
 width = 34.0
 default_color = Color( 1, 1, 1, 1 )
-gradient = SubResource( 2 )
+gradient = SubResource( 7 )
 script = ExtResource( 2 )
-length = 15
-timer = 0.01
 
 [node name="AudioHit" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource( 3 )

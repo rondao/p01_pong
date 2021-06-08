@@ -1,18 +1,18 @@
 extends KinematicBody2D
 class_name Paddle
 
+const SPEED := 600
+
+const MAX_CHARGE := 0.5
+
 enum PlayerType {NONE, AI_01, AI_02, HUMAN_01, HUMAN_02, NETWORK}
-export(PlayerType) var player_type: int = PlayerType.NONE
+var player_type: int = PlayerType.NONE
+var paddle_type: int = Globals.PaddleType.NONE
 
-var paddle_type: int
+var velocity: Vector2
+var charge: float
 
-export(int) var speed: int
-var velocity := Vector2()
-
-var charge := 0.0
-var _max_charge := 0.5
-
-var _move_to: float
+var move_to: float
 
 
 func _ready():
@@ -25,8 +25,8 @@ func _process(delta: float):
 	elif player_type == PlayerType.AI_02 or player_type == PlayerType.HUMAN_02:
 			_handle_input("player_02", delta)
 
-	if _move_to:
-		velocity.y = speed * _get_move_to_direction(_move_to, speed * delta)
+	if move_to:
+		velocity.y = SPEED * _get_move_to_direction(move_to, SPEED * delta)
 
 
 func _physics_process(delta: float):
@@ -44,17 +44,17 @@ func _physics_process(delta: float):
 
 func _handle_input(player_number: String, delta: float):
 	if Input.is_action_pressed(player_number + "_up"):
-		velocity.y = -speed
+		velocity.y = -SPEED
 	elif Input.is_action_pressed(player_number + "_down"):
-		velocity.y = speed
+		velocity.y = SPEED
 	elif Input.is_action_pressed(player_number + "_move_to"):
-		_move_to = Input.get_action_strength(player_number + "_move_to")
+		move_to = Input.get_action_strength(player_number + "_move_to")
 	else:
 		velocity = Vector2.ZERO
-		_move_to = 0.0
+		move_to = 0.0
 
 	if Input.is_action_pressed(player_number + "_charge"):
-		set_charge(min(charge + delta, _max_charge))
+		set_charge(min(charge + delta, MAX_CHARGE))
 	else:
 		set_charge(0.0)
 
@@ -90,4 +90,4 @@ func set_charge(charge_value: float):
 
 
 func set_position(pos: Vector2):
-	_move_to = pos.y
+	move_to = pos.y
