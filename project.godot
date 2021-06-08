@@ -12,32 +12,47 @@ _global_script_classes=[ {
 "base": "Node2D",
 "class": "AI",
 "language": "GDScript",
-"path": "res://game/scripts/ai.gd"
+"path": "res://src/pong/ai/ai.gd"
 }, {
 "base": "KinematicBody2D",
 "class": "Ball",
 "language": "GDScript",
-"path": "res://game/scripts/ball.gd"
+"path": "res://src/pong/ball/ball.gd"
 }, {
 "base": "Line2D",
 "class": "BallTrail",
 "language": "GDScript",
-"path": "res://game/scripts/ball_trail.gd"
+"path": "res://src/pong/ball/ball_trail.gd"
 }, {
 "base": "PopupPanel",
 "class": "EndGamePopup",
 "language": "GDScript",
-"path": "res://game/scripts/end_game_popup.gd"
+"path": "res://src/pong/end_game_popup.gd"
 }, {
 "base": "Node",
 "class": "Globals",
 "language": "GDScript",
-"path": "res://game/scripts/globals.gd"
+"path": "res://src/globals.gd"
 }, {
 "base": "Node2D",
 "class": "MobileInput",
 "language": "GDScript",
-"path": "res://game/scripts/mobile_inputs/mobile_input.gd"
+"path": "res://src/mobile_inputs/mobile_input.gd"
+}, {
+"base": "PopupPanel",
+"class": "MobileInputSelection",
+"language": "GDScript",
+"path": "res://src/main_menu/selection_popups/mobile_input_selection.gd"
+}, {
+"base": "MobileInput",
+"class": "MobileOneHandInput",
+"language": "GDScript",
+"path": "res://src/mobile_inputs/mobile_input_one_hand.gd"
+}, {
+"base": "MobileInput",
+"class": "MobileTwoHandInput",
+"language": "GDScript",
+"path": "res://src/mobile_inputs/mobile_input_two_hands.gd"
 }, {
 "base": "Reference",
 "class": "NakamaAPI",
@@ -112,12 +127,17 @@ _global_script_classes=[ {
 "base": "KinematicBody2D",
 "class": "Paddle",
 "language": "GDScript",
-"path": "res://game/scripts/paddle.gd"
+"path": "res://src/pong/paddle/paddle.gd"
+}, {
+"base": "PopupPanel",
+"class": "PaddleSelection",
+"language": "GDScript",
+"path": "res://src/main_menu/selection_popups/paddle_selection.gd"
 }, {
 "base": "Control",
 "class": "PongGame",
 "language": "GDScript",
-"path": "res://game/scripts/pong_game.gd"
+"path": "res://src/pong/pong_game.gd"
 } ]
 _global_script_class_icons={
 "AI": "",
@@ -126,6 +146,9 @@ _global_script_class_icons={
 "EndGamePopup": "",
 "Globals": "",
 "MobileInput": "",
+"MobileInputSelection": "",
+"MobileOneHandInput": "",
+"MobileTwoHandInput": "",
 "NakamaAPI": "",
 "NakamaAsyncResult": "",
 "NakamaClient": "",
@@ -141,24 +164,26 @@ _global_script_class_icons={
 "NakamaStorageObjectId": "",
 "NakamaWriteStorageObject": "",
 "Paddle": "",
+"PaddleSelection": "",
 "PongGame": ""
 }
 
 [application]
 
 config/name="p01_pong"
-run/main_scene="res://game/scenes/main_menu.tscn"
+run/main_scene="res://src/main_menu/main_menu.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Nakama="*res://addons/com.heroiclabs.nakama/Nakama.gd"
-Network="*res://game/scripts/network.gd"
-GameServer="*res://game/scripts/game_server.gd"
+Network="*res://src/network/network.gd"
+GameServer="*res://src/network/game_server.gd"
 UserPreferences="*res://user_preferences.gd"
 
 [debug]
 
+settings/stdout/verbose_stdout=true
 gdscript/warnings/treat_warnings_as_errors=true
 gdscript/warnings/return_value_discarded=false
 gdscript/warnings/unsafe_property_access=true
@@ -258,6 +283,14 @@ player_02_charge={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777231,"unicode":0,"echo":false,"script":null)
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777233,"unicode":0,"echo":false,"script":null)
  ]
+}
+player_01_move_to={
+"deadzone": 0.5,
+"events": [  ]
+}
+player_02_move_to={
+"deadzone": 0.5,
+"events": [  ]
 }
 
 [layer_names]

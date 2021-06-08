@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/main_menu/selection_popups/paddle_selection.gd" type="Script" id=1]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://fonts/FreeSansBold.otf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 128
+font_data = SubResource( 1 )
+
+[node name="PaddleSelection" type="PopupPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+popup_exclusive = true
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+custom_constants/margin_right = 50
+custom_constants/margin_top = 50
+custom_constants/margin_left = 50
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="HBox" type="VBoxContainer" parent="Margin"]
+margin_left = 50.0
+margin_top = 50.0
+margin_right = 1862.0
+margin_bottom = 1022.0
+custom_constants/separation = 100
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="SelectionText" type="Label" parent="Margin/HBox"]
+margin_right = 1820.0
+margin_bottom = 142.0
+custom_fonts/font = SubResource( 2 )
+text = "PADDLE_SELECTION"
+align = 1
+
+[node name="PaddleButtons" type="HBoxContainer" parent="Margin/HBox"]
+margin_top = 242.0
+margin_right = 1820.0
+margin_bottom = 980.0
+size_flags_vertical = 3
+custom_constants/separation = 50
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Geometric" type="Button" parent="Margin/HBox/PaddleButtons"]
+margin_right = 573.0
+margin_bottom = 738.0
+size_flags_horizontal = 3
+text = "GEOMETRIC"
+
+[node name="Angular" type="Button" parent="Margin/HBox/PaddleButtons"]
+margin_left = 623.0
+margin_right = 1196.0
+margin_bottom = 738.0
+size_flags_horizontal = 3
+text = "ANGULAR"
+
+[node name="Differential" type="Button" parent="Margin/HBox/PaddleButtons"]
+margin_left = 1246.0
+margin_right = 1820.0
+margin_bottom = 738.0
+size_flags_horizontal = 3
+text = "DIFFERENTIAL"
+[connection signal="pressed" from="Margin/HBox/PaddleButtons/Geometric" to="." method="_on_Geometric_pressed"]
+[connection signal="pressed" from="Margin/HBox/PaddleButtons/Angular" to="." method="_on_Angular_pressed"]
+[connection signal="pressed" from="Margin/HBox/PaddleButtons/Differential" to="." method="_on_Differential_pressed"]
