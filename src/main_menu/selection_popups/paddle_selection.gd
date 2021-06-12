@@ -12,12 +12,12 @@ func _paddle_selected(paddle_type: int):
 
 
 func _on_Geometric_pressed():
-	_paddle_selected(Globals.PaddleType.GEOMETRIC)
+	_paddle_selected(UserPreferences.PaddleType.GEOMETRIC)
 
 
 func _on_Angular_pressed():
-	_paddle_selected(Globals.PaddleType.ANGULAR)
+	_paddle_selected(UserPreferences.PaddleType.ANGULAR)
 
 
 func _on_Differential_pressed():
-	_paddle_selected(Globals.PaddleType.DIFFERENTIAL)
+	_paddle_selected(UserPreferences.PaddleType.DIFFERENTIAL)

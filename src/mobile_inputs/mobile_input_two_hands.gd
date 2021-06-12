@@ -18,19 +18,19 @@ static func create() -> MobileTwoHandInput:
 	return (load("res://src/mobile_inputs/mobile_input_two_hand.tscn") as PackedScene).instance() as MobileTwoHandInput
 
 
-func _drag_to_action(drag: InputEventScreenDrag):
-	if _is_control_side(drag.position.x):
+func drag_to_action(drag: InputEventScreenDrag):
+	if is_on_player_side(drag.position.x):
 		Input.action_press(player + "_move_to", drag.position.y)
 
 
-func _touch_to_action(touch: InputEventScreenTouch):
+func touch_to_action(touch: InputEventScreenTouch):
 	if touch.is_pressed():
-		if _is_control_side(touch.position.x):
+		if is_on_player_side(touch.position.x):
 			Input.action_press(player + "_move_to", touch.position.y)
 		else:
 			Input.action_press(player + "_charge")
 	else:
-		if _is_control_side(touch.position.x):
+		if is_on_player_side(touch.position.x):
 			Input.action_release(player + "_move_to")
 		else:
 			Input.action_release(player + "_charge")

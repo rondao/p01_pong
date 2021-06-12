@@ -1,5 +1,5 @@
-class_name MobileInput
 extends Node2D
+class_name MobileInput
 
 ## Mobile Input Scheme one hand
 #
@@ -10,12 +10,12 @@ extends Node2D
 # Dragging in X direction activates charge.
 #
 
-onready var _center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
+onready var center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
-export(String) var player := "player_01"
-export(Globals.Side) var side: int = Globals.Side.LEFT
+var player: String
+var side: int = Globals.Side.NONE
 
-var _touch_position := Vector2.ZERO
+var touch_position := Vector2.ZERO
 
 
 func _ready():
@@ -25,30 +25,28 @@ func _ready():
 
 func _input(event: InputEvent):
 	if event is InputEventScreenDrag:
-		_drag_to_action(event as InputEventScreenDrag)
+		drag_to_action(event as InputEventScreenDrag)
 	elif event is InputEventScreenTouch:
-		_touch_to_action(event as InputEventScreenTouch)
+		touch_to_action(event as InputEventScreenTouch)
 
 
-func _drag_to_action(_drag: InputEventScreenDrag):
+func configure(side_: int, player_: String) -> MobileInput:
+	player = player_
+	side = side_
+	return self
+
+
+func drag_to_action(_drag: InputEventScreenDrag):
 	pass
 
 
-func _touch_to_action(_touch: InputEventScreenTouch):
+func touch_to_action(_touch: InputEventScreenTouch):
 	pass
 
 
-func _is_control_side(x_position: float):
+func is_on_player_side(x_position: float):
 	match side:
 		Globals.Side.LEFT:
-			return x_position < _center.x
+			return x_position < center.x
 		Globals.Side.RIGHT:
-			return x_position > _center.x
-
-
-func set_side(new_side: int):
-	self.side = new_side
-
-
-func set_player(new_player: String):
-	self.player = new_player
+			return x_position > center.x

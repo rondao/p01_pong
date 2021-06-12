@@ -1,24 +1,26 @@
 extends Node
 
-const USER_PREFERENCES_FILE_NAME := "user://user_preferences.cfg"
+enum PaddleType {NONE, GEOMETRIC, ANGULAR, DIFFERENTIAL}
+enum MobileInput {NONE, ONE_HAND, TWO_HANDS}
 
+const USER_PREFERENCES_FILE_NAME := "user://user_preferences.cfg"
 var config: ConfigFile
 
 const INPUT_SECTION := "input"
 
 const PADDLE_TYPE_KEY := "paddle_type"
-var paddle_type: int = Globals.PaddleType.NONE
+var paddle_type: int = PaddleType.NONE
 
 const MOBILE_INPUT_KEY := "mobile_input"
-var mobile_input: int = Globals.MobileInput.NONE
+var mobile_input: int = MobileInput.NONE
 
 
 func _ready():
 	config = ConfigFile.new()
 
 	if config.load(USER_PREFERENCES_FILE_NAME) == OK:
-		paddle_type = config.get_value(INPUT_SECTION, PADDLE_TYPE_KEY, Globals.PaddleType.NONE)
-		mobile_input = config.get_value(INPUT_SECTION, MOBILE_INPUT_KEY, Globals.MobileInput.NONE)
+		paddle_type = config.get_value(INPUT_SECTION, PADDLE_TYPE_KEY, PaddleType.NONE)
+		mobile_input = config.get_value(INPUT_SECTION, MOBILE_INPUT_KEY, MobileInput.NONE)
 
 
 func save_paddle_type(new_paddle_type: int):

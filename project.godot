@@ -191,7 +191,8 @@ config/icon="res://icon.png"
 Nakama="*res://addons/com.heroiclabs.nakama/Nakama.gd"
 Network="*res://src/network/network.gd"
 GameServer="*res://src/network/game_server.gd"
-UserPreferences="*res://user_preferences.gd"
+UserPreferences="*res://src/user_preferences.gd"
+Netcode="*res://src/network/netcode.gd"
 
 [debug]
 

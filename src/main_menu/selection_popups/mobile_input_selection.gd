@@ -12,9 +12,9 @@ func _mobile_input_selected(mobile_input: int):
 
 
 func _on_OneHand_pressed():
-	_mobile_input_selected(Globals.MobileInput.ONE_HAND)
+	_mobile_input_selected(UserPreferences.MobileInput.ONE_HAND)
 
 
 func _on_TwoHands_pressed():
-	_mobile_input_selected(Globals.MobileInput.TWO_HANDS)
+	_mobile_input_selected(UserPreferences.MobileInput.TWO_HANDS)
 

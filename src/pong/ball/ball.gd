@@ -99,7 +99,7 @@ func apply_collision(_new_position: Vector2, _new_velocity: Vector2, _newbonus_v
 func _collide_paddles(collision: KinematicCollision2D):
 	var collider := collision.collider as Paddle
 	match collider.paddle_type:
-		Globals.PaddleType.DIFFERENTIAL:
+		UserPreferences.PaddleType.DIFFERENTIAL:
 			bonus_velocity = BONUS_VELOCITY_MINIMUM + abs(collider.velocity.y) * 0.001
 			if collider.velocity.y:
 				spin = -collider.velocity.y * 1.75
@@ -107,7 +107,7 @@ func _collide_paddles(collision: KinematicCollision2D):
 			else:
 				spin = -velocity.y * 1.5
 			velocity = velocity.bounce(collision.normal)
-		Globals.PaddleType.ANGULAR:
+		UserPreferences.PaddleType.ANGULAR:
 			var collision_relative_position := \
 				collision.position.y - collider.position.y
 			var percent_distance_from_center := \
@@ -118,7 +118,7 @@ func _collide_paddles(collision: KinematicCollision2D):
 			velocity.y = percent_distance_from_center * ANGULAR_Y_VELOCITY
 			velocity = velocity.bounce(collision.normal)
 			spin = 0.0
-		Globals.PaddleType.GEOMETRIC:
+		UserPreferences.PaddleType.GEOMETRIC:
 			velocity = velocity.bounce(collision.normal)
 			bonus_velocity = 1.0
 			spin = 0.0
