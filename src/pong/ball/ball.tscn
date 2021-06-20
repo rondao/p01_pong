@@ -5,7 +5,7 @@
 
 [sub_resource type="CircleShape2D" id=1]
 
-[sub_resource type="Gradient" id=7]
+[sub_resource type="Gradient" id=2]
 colors = PoolColorArray( 1, 0, 0, 0, 1, 0, 0, 1 )
 
 [sub_resource type="AudioStreamOGGVorbis" id=3]
@@ -63,7 +63,7 @@ z_index = -1
 points = PoolVector2Array( 241.694, 366.223 )
 width = 34.0
 default_color = Color( 1, 1, 1, 1 )
-gradient = SubResource( 7 )
+gradient = SubResource( 2 )
 script = ExtResource( 2 )
 
 [node name="AudioHit" type="AudioStreamPlayer2D" parent="."]
@@ -77,3 +77,7 @@ stream = SubResource( 5 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
 anims/ball_spawn = SubResource( 6 )
+[connection signal="normally_hitted" from="." to="." method="update"]
+[connection signal="normally_hitted" from="." to="Trail" method="disable"]
+[connection signal="powered_hitted" from="." to="." method="update"]
+[connection signal="powered_hitted" from="." to="Trail" method="enable"]

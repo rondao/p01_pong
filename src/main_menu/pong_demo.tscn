@@ -6,13 +6,6 @@
 [ext_resource path="res://src/pong/scenery/net_line.gd" type="Script" id=4]
 [ext_resource path="res://audio/goal.wav" type="AudioStream" id=6]
 
-
-
-
-
-
-
-
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 540 )
 
@@ -26,7 +19,6 @@ __meta__ = {
 
 [node name="LeftPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 50, 540 )
-player_type = 2
 
 [node name="LeftDemoInput" type="Timer" parent="LeftPaddle"]
 wait_time = 1.7
@@ -35,7 +27,6 @@ autostart = true
 [node name="RightPaddle" parent="." instance=ExtResource( 1 )]
 position = Vector2( 1870, 540 )
 rotation = 3.14159
-player_type = 3
 
 [node name="RightDemoInput" type="Timer" parent="RightPaddle"]
 wait_time = 1.7

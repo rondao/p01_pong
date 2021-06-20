@@ -14,23 +14,19 @@ class_name MobileTwoHandInput
 #
 
 
-static func create() -> MobileTwoHandInput:
-	return (load("res://src/mobile_inputs/mobile_input_two_hand.tscn") as PackedScene).instance() as MobileTwoHandInput
-
-
 func drag_to_action(drag: InputEventScreenDrag):
 	if is_on_player_side(drag.position.x):
-		Input.action_press(player + "_move_to", drag.position.y)
+		Input.action_press(str(side) + "_move_to", drag.position.y)
 
 
 func touch_to_action(touch: InputEventScreenTouch):
 	if touch.is_pressed():
 		if is_on_player_side(touch.position.x):
-			Input.action_press(player + "_move_to", touch.position.y)
+			Input.action_press(str(side) + "_move_to", touch.position.y)
 		else:
-			Input.action_press(player + "_charge")
+			Input.action_press(str(side) + "_charge")
 	else:
 		if is_on_player_side(touch.position.x):
-			Input.action_release(player + "_move_to")
+			Input.action_release(str(side) + "_move_to")
 		else:
-			Input.action_release(player + "_charge")
+			Input.action_release(str(side) + "_charge")

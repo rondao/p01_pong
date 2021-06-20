@@ -88,5 +88,9 @@ margin_bottom = 165.0
 [node name="AudioGoal" type="AudioStreamPlayer2D" parent="."]
 pause_mode = 2
 stream = ExtResource( 6 )
-[connection signal="collided_goal" from="Ball" to="." method="_on_Ball_collided_goal"]
-[connection signal="collided_paddle" from="Ball" to="." method="_on_Ball_collided_paddle"]
+[connection signal="goal_scored" from="." to="." method="spawn_goal_sfx"]
+[connection signal="goal_scored" from="." to="AudioGoal" method="play"]
+[connection signal="left_scored" from="." to="Score/HBoxContainer/LeftScore" method="update_score"]
+[connection signal="right_scored" from="." to="Score/HBoxContainer/RightScore" method="update_score"]
+[connection signal="collided_left_goal" from="Ball" to="." method="_on_Ball_collided_left_goal"]
+[connection signal="collided_right_goal" from="Ball" to="." method="_on_Ball_collided_right_goal"]

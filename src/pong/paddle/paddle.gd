@@ -5,26 +5,13 @@ const SPEED := 600
 
 const MAX_CHARGE := 0.5
 
-var paddle_type: int = UserPreferences.PaddleType.NONE
-
-var player_input: String
-onready var netplayer: Netcode.LocalPlayer = Netcode.LocalPlayer.create()
-
 var velocity: Vector2
 var charge: float
 
 var move_to: float
 
 
-func _ready():
-	paddle_type = UserPreferences.paddle_type
-
-
 func _physics_process(delta: float):
-	var current_frame := get_tree().get_frame()
-	netplayer.set_input(current_frame, get_local_input(player_input))
-	handle_input(netplayer.get_input(current_frame), delta)
-
 	var collision := move_and_collide(velocity * delta * (1.0 - charge))
 	if collision:
 		var collider := collision.collider as Node
@@ -47,15 +34,15 @@ func get_move_to_direction(move_to_y: float, delta_speed: float) -> int:
 
 
 func handle_input(input: int, delta: float):
-	if input & INPUT_UP:
+	if input & Globals.GameInput.UP:
 		velocity.y = -SPEED
-	elif input & INPUT_DOWN:
+	elif input & Globals.GameInput.DOWN:
 		velocity.y = SPEED
 	else:
 		velocity = Vector2.ZERO
 		move_to = 0.0
 
-	if input & INPUT_CHARGE:
+	if input & Globals.GameInput.CHARGE:
 		set_charge(min(charge + delta, MAX_CHARGE))
 	else:
 		set_charge(0.0)
@@ -76,25 +63,3 @@ func set_charge(charge_value: float):
 
 func set_position(pos: Vector2):
 	move_to = pos.y
-
-
-const INPUT_NONE   := 0
-const INPUT_UP     := 1
-const INPUT_DOWN   := 2
-const INPUT_CHARGE := 4
-
-
-func get_local_input(player_number: String) -> int:
-	var input := INPUT_NONE
-
-	if Input.is_action_pressed(player_number + "_up"):
-		input |= INPUT_UP
-	elif Input.is_action_pressed(player_number + "_down"):
-		input |= INPUT_DOWN
-	else:
-		input = INPUT_NONE
-
-	if Input.is_action_pressed(player_number + "_charge"):
-		input |= INPUT_CHARGE
-
-	return input

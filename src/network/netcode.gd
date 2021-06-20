@@ -1,6 +1,6 @@
 extends Node
 
-const INPUT_DELAY  := 2 # Frames
+const INPUT_DELAY  := 7 # Frames
 const MAX_ROLLBACK := 8 # Frames
 
 var players := []
@@ -25,10 +25,6 @@ class NetPlayer:
 
 class LocalPlayer:
 	extends NetPlayer
-
-
-	static func create() -> LocalPlayer:
-		return LocalPlayer.new()
 
 
 	func set_input(frame: int, input: int) -> void:

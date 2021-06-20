@@ -13,23 +13,19 @@ class_name MobileOneHandInput
 const DRAG_FOR_CHARGE := 150
 
 
-static func create() -> MobileOneHandInput:
-	return (load("res://src/mobile_inputs/mobile_input_one_hand.tscn") as PackedScene).instance() as MobileOneHandInput
-
-
 func drag_to_action(drag: InputEventScreenDrag):
 	if is_on_player_side(drag.position.x):
-		Input.action_press(player + "_move_to", drag.position.y)
+		Input.action_press(str(side) + "_move_to", drag.position.y)
 
 		if abs(drag.position.x - touch_position.x) > DRAG_FOR_CHARGE:
-			Input.action_press(player + "_charge")
+			Input.action_press(str(side) + "_charge")
 
 
 func touch_to_action(touch: InputEventScreenTouch):
 	if is_on_player_side(touch.position.x):
 		if touch.is_pressed():
 			touch_position = touch.position
-			Input.action_press(player + "_move_to", touch.position.y)
+			Input.action_press(str(side) + "_move_to", touch.position.y)
 		else:
-			Input.action_release(player + "_move_to")
-			Input.action_release(player + "_charge")
+			Input.action_release(str(side) + "_move_to")
+			Input.action_release(str(side) + "_charge")

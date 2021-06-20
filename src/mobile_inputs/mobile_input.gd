@@ -12,15 +12,14 @@ class_name MobileInput
 
 onready var center := Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
 
-var player: String
 var side: int = Globals.Side.NONE
 
 var touch_position := Vector2.ZERO
 
 
 func _ready():
-	Input.action_release(player + "_move_to")
-	Input.action_release(player + "_charge")
+	Input.action_release(str(side) + "_move_to")
+	Input.action_release(str(side) + "_charge")
 
 
 func _input(event: InputEvent):
@@ -30,8 +29,7 @@ func _input(event: InputEvent):
 		touch_to_action(event as InputEventScreenTouch)
 
 
-func configure(side_: int, player_: String) -> MobileInput:
-	player = player_
+func configure(side_: int) -> MobileInput:
 	side = side_
 	return self
 
