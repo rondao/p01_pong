@@ -35,3 +35,14 @@ func save_mobile_input(new_mobile_input: int):
 
 	config.set_value(INPUT_SECTION, MOBILE_INPUT_KEY, mobile_input)
 	config.save(USER_PREFERENCES_FILE_NAME)
+
+
+func get_user_paddle_bounce() -> Node:
+	match paddle_type:
+		PaddleType.GEOMETRIC:
+			return GeometricBounce.create()
+		PaddleType.ANGULAR:
+			return AngularBounce.create()
+		PaddleType.DIFFERENTIAL:
+			return DifferentialBounce.create()
+	return null

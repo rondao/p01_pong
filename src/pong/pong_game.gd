@@ -42,20 +42,25 @@ static func create(game_type: int, player_side: int = Globals.Side.LEFT) -> Pong
 				UserPreferences.MobileInput.TWO_HAND:
 					game.add_child(MobileTwoHandInput.new().configure(player_side))
 
+	var left_player := {}
+	var right_player := {}
+
+	left_player.paddle = game.get_node("LeftPaddle")
+	right_player.paddle = game.get_node("RightPaddle")
+
 	match game_type:
 		GameType.LOCAL_AI:
-			Netcode.create_players(Netcode.LocalPlayer.new(), Netcode.LocalPlayer.new())
-			game.get_node("LeftPaddle").add_child(AngularBounce.create())
-			game.get_node("RightPaddle").add_child(GeometricBounce.create())
-			game.players.append(Player.new(
-				Netcode.players[0],
-				Game_Input.new(Globals.Side.LEFT),
-				game.get_node("LeftPaddle")))
-			game.players.append(Player.new(
-				Netcode.players[1],
-				AI_Input.new(game.get_node("Ball"), game.get_node("RightPaddle")),
-				game.get_node("RightPaddle")))
+			left_player.paddle.add_child(UserPreferences.get_user_paddle_bounce())
+			right_player.paddle.add_child(DifferentialBounce.create())
+			left_player.input = Game_Input.new(Globals.Side.LEFT)
+			right_player.input = AI_Input.new(game.get_node("Ball"), right_player.paddle)
+			left_player.net = Netcode.LocalPlayer.new()
+			right_player.net = Netcode.LocalPlayer.new()
 
+	game.players.append(Player.new(left_player.net, left_player.input, left_player.paddle))
+	game.players.append(Player.new(right_player.net, right_player.input, right_player.paddle))
+
+	Netcode.create_players(left_player.net, right_player.net)
 	return game
 
 
@@ -126,6 +131,7 @@ class Player:
 	var net: Netcode.NetPlayer
 	var input: Local_Input
 	var paddle: Paddle
+
 
 	func _init(net_: Netcode.NetPlayer, input_: Local_Input, paddle_: Paddle):
 		net = net_

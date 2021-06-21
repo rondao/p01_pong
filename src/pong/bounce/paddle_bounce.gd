@@ -7,6 +7,7 @@ signal powered_hitted()
 const BOUNCE_ACCEL := 1.2
 const MAXIMUM_X_VELOCITY := 1600
 
+
 func bounce(ball: Ball, collision: KinematicCollision2D) -> void:
 	.bounce(ball, collision)
 	var paddle := collision.collider as Paddle
