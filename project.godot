@@ -183,6 +183,11 @@ _global_script_classes=[ {
 "class": "PongGame",
 "language": "GDScript",
 "path": "res://src/pong/pong_game.gd"
+}, {
+"base": "Reference",
+"class": "Remote_Input",
+"language": "GDScript",
+"path": "res://src/pong/input/remote_input.gd"
 } ]
 _global_script_class_icons={
 "AI_Input": "",
@@ -219,13 +224,14 @@ _global_script_class_icons={
 "Paddle": "",
 "PaddleBounce": "",
 "PaddleSelection": "",
-"PongGame": ""
+"PongGame": "",
+"Remote_Input": ""
 }
 
 [application]
 
 config/name="p01_pong"
-run/main_scene="res://src/main_menu/main_menu.tscn"
+run/main_scene="res://src/main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -235,6 +241,7 @@ Network="*res://src/network/network.gd"
 GameServer="*res://src/network/game_server.gd"
 UserPreferences="*res://src/user_preferences.gd"
 Netcode="*res://src/network/netcode.gd"
+MatchMaker="*res://src/network/match_maker.gd"
 
 [debug]
 
@@ -253,6 +260,10 @@ window/size/width=1920
 window/size/height=1080
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
+
+[gdnative]
+
+singletons=[ "res://webrtc/webrtc.tres" ]
 
 [input]
 
@@ -308,33 +319,33 @@ ui_end={
 "deadzone": 0.5,
 "events": [  ]
 }
-1_up={
+0_up={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null)
  ]
 }
-1_down={
+0_down={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null)
  ]
 }
-1_charge={
+0_charge={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null)
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null)
  ]
 }
-2_up={
+1_up={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777232,"unicode":0,"echo":false,"script":null)
  ]
 }
-2_down={
+1_down={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777234,"unicode":0,"echo":false,"script":null)
  ]
 }
-2_charge={
+1_charge={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777231,"unicode":0,"echo":false,"script":null)
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777233,"unicode":0,"echo":false,"script":null)

@@ -66,9 +66,9 @@ func _server_disconnected():
 	print("_server_disconnected")
 
 
-func _on_Server_game_found(side: int, rng_seed: int):
-	seed(rng_seed)
-	get_tree().get_root().add_child(PongGame.create(PongGame.GameType.SERVER, side))
+#func _on_Server_game_found(side: int, rng_seed: int):
+#	seed(rng_seed)
+#	get_tree().get_root().add_child(PongGame.create(PongGame.GameType.SERVER, side))
 
 
 func disconnect_multiplayer_game():

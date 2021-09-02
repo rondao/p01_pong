@@ -20,12 +20,12 @@ func enable_ranked_game():
 
 func _on_PlayAgainstAI_pressed():
 	yield(check_user_options_set(), "completed")
-	start_game(PongGame.create(PongGame.GameType.LOCAL_AI))
+#	start_game(PongGame.create(PongGame.GameType.LOCAL_AI))
 
 
 func _on_Rankings_pressed():
 	yield(check_user_options_set(), "completed")
-	start_game(PongGame.create(PongGame.GameType.LOCAL_MULTIPLAYER))
+#	start_game(PongGame.create(PongGame.GameType.LOCAL_MULTIPLAYER))
 
 
 func _on_PlayRanked_pressed():
@@ -34,8 +34,8 @@ func _on_PlayRanked_pressed():
 	var searching_popup := popup_searching_game()
 	connect("game_started", searching_popup, "queue_free")
 
-	GameServer.connect("game_found", self, "network_game_found")
-	GameServer.request_matchmaking()
+	MatchMaker.connect("match_found", self, "network_game_found")
+	MatchMaker.connect_to_match_maker()
 
 
 func _on_Settings_pressed():
@@ -44,9 +44,9 @@ func _on_Settings_pressed():
 		yield(popup_mobile_input_selection(), "popup_hide")
 
 
-func network_game_found(side: int, rng_seed: int):
+func network_game_found(player_side: int, rng_seed: int):
 	seed(rng_seed)
-	start_game(PongGame.create(PongGame.GameType.NETWORK_MULTIPLAYER, side))
+	start_game(PongGame.create_multiplayer_game(player_side))
 
 
 func check_user_options_set():
