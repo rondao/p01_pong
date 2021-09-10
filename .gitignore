@@ -16,3 +16,7 @@ p01_pong.apk
 p01_pong.exe
 p01_pong.x86_64
 p01_pong.pck
+
+# Webrtc lib
+libwebrtc_native.linux.release.64.so
+webrtc/
