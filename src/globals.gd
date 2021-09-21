@@ -1,5 +1,4 @@
 extends Node
-class_name Globals
 
 enum Side {NONE = -1, LEFT = 0, RIGHT = 1}
 

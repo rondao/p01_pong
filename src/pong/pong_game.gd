@@ -22,10 +22,11 @@ var players: Array
 var left_score: int
 var right_score: int
 
+var current_frame: int
+
 
 static func create_multiplayer_game(player_side: int) -> PongGame:
-
-	var game = (load("res://src/pong/pong_game.tscn") as PackedScene).instance() as PongGame
+	var game: PongGame = (load("res://src/pong/pong_game.tscn") as PackedScene).instance() as PongGame
 	game.connect("game_won_by", game, "popup_end_game", [player_side])
 
 	if OS.has_touchscreen_ui_hint():
@@ -45,8 +46,8 @@ static func create_multiplayer_game(player_side: int) -> PongGame:
 									Local_Input.new(),
 									game.get_node("LeftPaddle" if Globals.opposite_side(player_side) == Globals.Side.LEFT else "RightPaddle"))
 
-	game.get_node("LeftPaddle").add_child(UserPreferences.get_user_paddle_bounce())
-	game.get_node("RightPaddle").add_child(UserPreferences.get_user_paddle_bounce())
+	game.get_node("LeftPaddle").add_child(DifferentialBounce.create())#UserPreferences.get_user_paddle_bounce())
+	game.get_node("RightPaddle").add_child(DifferentialBounce.create())#UserPreferences.get_user_paddle_bounce())
 
 	return game
 
@@ -100,14 +101,28 @@ func _ready():
 
 
 func _physics_process(delta: float):
-	var current_frame := get_tree().get_frame()
+	var rollback_frame := current_frame
+
 	for player in players:
 		if player.net is Netcode.LocalPlayer:
 			player.net.send_input(current_frame, player.input.to_data())
-			player.paddle.handle_input(player.net.get_input(current_frame), delta)
 		else:
-			player.net.receive_input()
-			player.paddle.handle_input(player.net.get_input(current_frame), delta)
+			rollback_frame = player.net.receive_input(current_frame)
+			if player.net.has_max_rollback_exceeded(current_frame):
+				return
+
+	if rollback_frame < current_frame:
+		reset_game_state(Netcode.get_game_state(rollback_frame))
+
+	while rollback_frame <= current_frame:
+		Netcode.set_game_state(rollback_frame, create_game_state(rollback_frame))
+		for player in players:
+			player.paddle.handle_input(player.net.get_input(rollback_frame), delta)
+			player.paddle.physics_process(delta)
+		ball.physics_process(delta)
+		rollback_frame += 1
+
+	current_frame += 1
 
 
 func _on_Ball_collided_right_goal():
@@ -124,6 +139,36 @@ func _on_Ball_collided_left_goal():
 	emit_signal("right_scored", right_score)
 	if right_score == GOALS_TO_WIN:
 		emit_signal("game_won_by", Globals.Side.RIGHT)
+
+
+func create_game_state(frame: int) -> PoolByteArray:
+	var state := {"frame": frame,
+					"ball.position": ball.position,
+					"ball.velocity": ball.velocity,
+					"ball.bonus_velocity": ball.bonus_velocity,
+					"ball.spin": ball.spin,
+					"players[0].paddle.position": players[0].paddle.position,
+					"players[0].paddle.charge": players[0].paddle.charge,
+					"players[1].paddle.position": players[1].paddle.position,
+					"players[1].paddle.charge": players[1].paddle.charge,
+					"left_score": left_score,
+					"right_score": right_score,
+				}
+	return var2bytes(state)
+
+
+func reset_game_state(game_state: PoolByteArray) -> void:
+	var dict = bytes2var(game_state)
+	ball.position = dict["ball.position"]
+	ball.velocity = dict["ball.velocity"]
+	ball.bonus_velocity = dict["ball.bonus_velocity"]
+	ball.spin = dict["ball.spin"]
+	players[0].paddle.position = dict["players[0].paddle.position"]
+	players[0].paddle.charge = dict["players[0].paddle.charge"]
+	players[1].paddle.position = dict["players[1].paddle.position"]
+	players[1].paddle.charge = dict["players[1].paddle.charge"]
+	left_score = dict["left_score"]
+	right_score = dict["right_score"]
 
 
 func spawn_goal_sfx():

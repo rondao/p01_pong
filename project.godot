@@ -59,11 +59,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/pong/bounce/geometric_bounce.gd"
 }, {
-"base": "Node",
-"class": "Globals",
-"language": "GDScript",
-"path": "res://src/globals.gd"
-}, {
 "base": "Node2D",
 "class": "GoalSfx",
 "language": "GDScript",
@@ -200,7 +195,6 @@ _global_script_class_icons={
 "EndGamePopup": "",
 "Game_Input": "",
 "GeometricBounce": "",
-"Globals": "",
 "GoalSfx": "",
 "Local_Input": "",
 "MobileInput": "",
@@ -242,6 +236,7 @@ GameServer="*res://src/network/game_server.gd"
 UserPreferences="*res://src/user_preferences.gd"
 Netcode="*res://src/network/netcode.gd"
 MatchMaker="*res://src/network/match_maker.gd"
+Globals="*res://src/globals.gd"
 
 [debug]
 

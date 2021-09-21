@@ -44,8 +44,7 @@ func _on_Settings_pressed():
 		yield(popup_mobile_input_selection(), "popup_hide")
 
 
-func network_game_found(player_side: int, rng_seed: int):
-	seed(rng_seed)
+func network_game_found(player_side: int):
 	start_game(PongGame.create_multiplayer_game(player_side))
 
 

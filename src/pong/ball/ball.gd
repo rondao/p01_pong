@@ -31,13 +31,11 @@ func _draw():
 	draw_circle(Vector2.ZERO, RADIUS, Color.white)
 
 
-func _process(delta: float):
+func physics_process(delta: float):
 	if spin:
 		velocity.y += spin * delta * 3
 		spin -= spin * delta * 3
 
-
-func _physics_process(delta: float):
 	var collision := move_and_collide(velocity * bonus_velocity * delta)
 	if collision:
 		var collider := collision.collider as Node2D
@@ -61,7 +59,7 @@ func restart_right(new_position: Vector2) -> void:
 func restart(side: Vector2, new_position: Vector2) -> void:
 	position = new_position;
 
-	side.y = rand_range(-1.25, 1.25)
+	side.y = velocity.normalized().y
 	velocity = START_VELOCITY * side.normalized()
 	bonus_velocity = 1.0
 	spin = 0.0

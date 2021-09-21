@@ -19,11 +19,18 @@ func _process(_delta: float) -> void:
 		custom_multiplayer.poll()
 
 
+func create_match_when_data_channel_is_ready(player_side: int) -> void:
+	if Netcode.game_data_channel.get_ready_state() == WebRTCDataChannel.STATE_OPEN:
+		get_tree().disconnect("idle_frame", self, "create_match_when_data_channel_is_ready")
+		match_found(player_side)
+
+
 master func start_match_maker() -> void:
 	var socket := WebSocketServer.new()
 	(socket as WebSocketServer).listen(MATCHMAKER_PORT, PoolStringArray(["ludus"]), true)
 	custom_multiplayer.network_peer = socket
 	custom_multiplayer.connect("network_peer_connected", self, "player_requested_match")
+	custom_multiplayer.connect("network_peer_disconnected", self, "player_stopped_match_request")
 
 
 master func player_requested_match(player_id: int) -> void:
@@ -33,6 +40,10 @@ master func player_requested_match(player_id: int) -> void:
 	else:
 		var opponent_id: int = players_searching_game.pop_front()
 		rpc_id(player_id, "create_match_with", opponent_id)
+
+
+master func player_stopped_match_request(player_id: int) -> void:
+	players_searching_game.erase(player_id)
 
 
 puppet func connect_to_match_maker() -> void:
@@ -47,7 +58,7 @@ puppet func create_match_with(opponent_id: int) -> void:
 	print("create_match_with: ", opponent_id)
 	Netcode.game_webrtc_connection.connect("session_description_created", self, "send_remote_description", [opponent_id])
 	Netcode.game_webrtc_connection.connect("ice_candidate_created", self, "send_ice_candidate", [opponent_id])
-	Netcode.game_webrtc_connection.connect("ice_candidate_created", self, "match_created", [opponent_id])
+	get_tree().connect("idle_frame", self, "create_match_when_data_channel_is_ready", [Globals.Side.LEFT])
 	Netcode.game_webrtc_connection.create_offer()
 
 
@@ -62,6 +73,7 @@ remote func receive_remote_description(type: String, sdp: String) -> void:
 	if type == "offer":
 		Netcode.game_webrtc_connection.connect("session_description_created", self, "send_remote_description", [custom_multiplayer.get_rpc_sender_id()])
 		Netcode.game_webrtc_connection.connect("ice_candidate_created", self, "send_ice_candidate", [custom_multiplayer.get_rpc_sender_id()])
+		get_tree().connect("idle_frame", self, "create_match_when_data_channel_is_ready", [Globals.Side.RIGHT])
 	Netcode.game_webrtc_connection.set_remote_description(type, sdp)
 
 
@@ -75,12 +87,5 @@ remote func receive_ice_candidate(media: String, index: int, name: String) -> vo
 	Netcode.game_webrtc_connection.add_ice_candidate(media, index, name)
 
 
-puppet func match_created(_media: String, _index: int, _name: String, opponent_id: int) -> void:
-	yield(get_tree().create_timer(1.0), "timeout")
-	rpc_id(opponent_id, "match_found", Globals.Side.RIGHT)
-	yield(get_tree().create_timer(0.05), "timeout")
-	match_found(Globals.Side.LEFT)
-
-
 remote func match_found(player_side: int) -> void:
-	emit_signal("match_found", player_side, randi())
+	emit_signal("match_found", player_side)

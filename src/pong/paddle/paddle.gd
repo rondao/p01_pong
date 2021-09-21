@@ -11,7 +11,7 @@ var charge: float
 var move_to: float
 
 
-func _physics_process(delta: float):
+func physics_process(delta: float):
 	var collision := move_and_collide(velocity * delta * (1.0 - charge))
 	if collision:
 		var collider := collision.collider as Node
