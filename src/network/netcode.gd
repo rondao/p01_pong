@@ -108,7 +108,8 @@ class RemotePlayer:
 			var remote_messages = bytes2var(Netcode.game_data_channel.get_packet())
 #			print("remote frame: ", remote_messages)
 			for i in messages.size():
-				if remote_messages[i].frame > messages[i].frame:
+				if (remote_messages[i].frame > messages[i].frame
+					and remote_messages[i].frame < frame + MAX_ROLLBACK): # Ignore messages for frames we didn't processed yet.
 					# Have we predicted the wrong input?
 					if remote_messages[i].input != messages[i].input:
 						if remote_messages[i].frame < rollback_frame:
