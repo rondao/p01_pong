@@ -106,21 +106,32 @@ func _physics_process(delta: float):
 	for player in players:
 		if player.net is Netcode.LocalPlayer:
 			player.net.send_input(current_frame, player.input.to_data())
+#			print(current_frame, " - ", player.input.to_data())
 		else:
 			rollback_frame = player.net.receive_input(current_frame)
 			if player.net.has_max_rollback_exceeded(current_frame):
 				return
 
 	if rollback_frame < current_frame:
-		reset_game_state(Netcode.get_game_state(rollback_frame))
+#		print("ROLLBACK to ", rollback_frame)
+		reset_game_state(Netcode.get_game_state(rollback_frame - current_frame))
 
 	while rollback_frame <= current_frame:
-		Netcode.set_game_state(rollback_frame, create_game_state(rollback_frame))
+		Netcode.set_game_state(rollback_frame - current_frame, create_game_state(rollback_frame, delta))
 		for player in players:
 			player.paddle.handle_input(player.net.get_input(rollback_frame), delta)
 			player.paddle.physics_process(delta)
 		ball.physics_process(delta)
 		rollback_frame += 1
+
+	var result := Netcode.receive_game_state()
+	if not result.state_match:
+		print("Invalid game state!")
+		print("Local  State: ", result.local_game_state)
+		print("Remote State: ", result.remote_game_state)
+		pass
+	if Netcode.game_state_ready_to_send():
+		Netcode.send_game_state()
 
 	current_frame += 1
 
@@ -141,8 +152,9 @@ func _on_Ball_collided_left_goal():
 		emit_signal("game_won_by", Globals.Side.RIGHT)
 
 
-func create_game_state(frame: int) -> PoolByteArray:
+func create_game_state(frame: int, delta: float) -> PoolByteArray:
 	var state := {"frame": frame,
+					"delta": delta,
 					"ball.position": ball.position,
 					"ball.velocity": ball.velocity,
 					"ball.bonus_velocity": ball.bonus_velocity,
