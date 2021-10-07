@@ -84,7 +84,8 @@ class LocalPlayer:
 
 	func send_input(frame: int, input: int) -> void:
 		var delayed_frame := frame + INPUT_DELAY
-		messages[delayed_frame % messages.size()] = {"frame": delayed_frame, "input": input}
+		if messages[delayed_frame % messages.size()].frame != delayed_frame: # Do not allow an Input to be changed.
+			messages[delayed_frame % messages.size()] = {"frame": delayed_frame, "input": input}
 #		print("local frame: ", messages)
 # warning-ignore:unsafe_property_access
 		Netcode.game_data_channel.put_packet(var2bytes(messages))
