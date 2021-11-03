@@ -72,6 +72,8 @@ class NetPlayer:
 	func _init():
 		for i in range(MAX_ROLLBACK):
 			messages.append({"frame": i, "input": Globals.GameInput.NONE})
+		for _i in range(INPUT_DELAY):
+			messages.append({"frame": 0, "input": Globals.GameInput.NONE})
 
 
 	func get_input(frame: int) -> int:
@@ -86,7 +88,6 @@ class LocalPlayer:
 		var delayed_frame := frame + INPUT_DELAY
 		if messages[delayed_frame % messages.size()].frame != delayed_frame: # Do not allow an Input to be changed.
 			messages[delayed_frame % messages.size()] = {"frame": delayed_frame, "input": input}
-#		print("local frame: ", messages)
 # warning-ignore:unsafe_property_access
 		Netcode.game_data_channel.put_packet(var2bytes(messages))
 
@@ -98,30 +99,36 @@ class LocalPlayer:
 class RemotePlayer:
 	extends NetPlayer
 
+	var oldest_frame_received := MAX_ROLLBACK
 
 	func receive_input(frame: int) -> int:
 		var rollback_frame := frame
 
+		var highest_frame_received: int
 # warning-ignore:unsafe_property_access
 		while Netcode.game_data_channel.get_available_packet_count() > 0:
 # warning-ignore:unsafe_property_access
 # warning-ignore:unsafe_property_access
 			var remote_messages = bytes2var(Netcode.game_data_channel.get_packet())
-#			print("remote frame: ", remote_messages)
 			for i in messages.size():
 				if (remote_messages[i].frame > messages[i].frame
-					and remote_messages[i].frame < frame + MAX_ROLLBACK): # Ignore messages for frames we didn't processed yet.
+					and remote_messages[i].frame < frame + MAX_ROLLBACK # Ignore messages for frames we didn't processed yet.
+					and remote_messages[i].frame < oldest_frame_received + MAX_ROLLBACK):
 					# Have we predicted the wrong input?
 					if remote_messages[i].input != messages[i].input:
 						if remote_messages[i].frame < rollback_frame:
 							rollback_frame = remote_messages[i].frame
+					# Keep the highest frame we have processed.
+					if remote_messages[i].frame > highest_frame_received:
+						highest_frame_received = remote_messages[i].frame
 					messages[i] = remote_messages[i]
+		if highest_frame_received > oldest_frame_received:
+			oldest_frame_received = highest_frame_received
 		return rollback_frame
 
 
 	func has_max_rollback_exceeded(frame: int) -> bool:
-#		print(frame, " - " ,messages)
-		return frame > messages[frame % messages.size()].frame + MAX_ROLLBACK
+		return frame > oldest_frame_received + MAX_ROLLBACK
 
 
 	func set_input(frame: int, input: int) -> void:
@@ -134,6 +141,5 @@ class RemotePlayer:
 
 	func predict_input(frame: int) -> int:
 		var predicted_input := .get_input(frame - 1)
-#		print("predict ", predicted_input, " for ", frame)
 		set_input(frame, predicted_input)
 		return predicted_input

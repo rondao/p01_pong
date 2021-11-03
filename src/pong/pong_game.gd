@@ -103,17 +103,18 @@ func _ready():
 func _physics_process(delta: float):
 	var rollback_frame := current_frame
 
+	var has_max_rollback_exceeded := false
 	for player in players:
 		if player.net is Netcode.LocalPlayer:
 			player.net.send_input(current_frame, player.input.to_data())
-#			print(current_frame, " - ", player.input.to_data())
 		else:
 			rollback_frame = player.net.receive_input(current_frame)
-			if player.net.has_max_rollback_exceeded(current_frame):
-				return
+			has_max_rollback_exceeded = player.net.has_max_rollback_exceeded(current_frame)
+
+	if has_max_rollback_exceeded:
+		return
 
 	if rollback_frame < current_frame:
-#		print("ROLLBACK to ", rollback_frame)
 		reset_game_state(Netcode.get_game_state(rollback_frame - current_frame))
 
 	while rollback_frame <= current_frame:
@@ -129,7 +130,7 @@ func _physics_process(delta: float):
 		print("Invalid game state!")
 		print("Local  State: ", result.local_game_state)
 		print("Remote State: ", result.remote_game_state)
-		pass
+		get_tree().quit()
 	if Netcode.game_state_ready_to_send():
 		Netcode.send_game_state()
 

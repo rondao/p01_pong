@@ -366,6 +366,10 @@ ui_end={
 
 locale_filter=[ 0, [  ] ]
 
+[network]
+
+limits/debugger_stdout/max_chars_per_second=100000
+
 [rendering]
 
 environment/default_clear_color=Color( 0.14902, 0.172549, 0.231373, 1 )
