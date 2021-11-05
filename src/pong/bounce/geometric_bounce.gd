@@ -7,7 +7,7 @@ static func create() -> Node:
 
 
 func bounce(ball: Ball, collision: KinematicCollision2D) -> void:
-	ball.velocity = ball.velocity.bounce(collision.normal)
+	ball.velocity = ball.velocity.bounce(collision.get_normal())
 	ball.bonus_velocity = 1.0
 	ball.spin = 0.0
 

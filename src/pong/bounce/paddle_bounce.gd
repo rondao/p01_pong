@@ -10,7 +10,7 @@ const MAXIMUM_X_VELOCITY := 1600
 
 func bounce(ball: Ball, collision: KinematicCollision2D) -> void:
 	.bounce(ball, collision)
-	var paddle := collision.collider as Paddle
+	var paddle := collision.get_collider() as Paddle
 
 	ball.velocity *= BOUNCE_ACCEL
 	ball.velocity.x = sign(ball.velocity.x) * min(abs(ball.velocity.x), MAXIMUM_X_VELOCITY)
