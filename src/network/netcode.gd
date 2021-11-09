@@ -68,6 +68,7 @@ func receive_game_state() -> Dictionary:
 class NetPlayer:
 	var input_delay := 0
 	var last_input_frame := -1
+	var current_frame := 0
 	var messages := []
 
 
@@ -78,17 +79,21 @@ class NetPlayer:
 
 
 	func set_input(input: int, frame: int) -> void:
-		last_input_frame = int(max(frame, last_input_frame))
-		messages[(frame + input_delay) % messages.size()] = input
+		if frame <= current_frame + input_delay:
+			last_input_frame = int(max(frame, last_input_frame))
+			messages[(frame + input_delay) % messages.size()] = input
 
 
 	func get_input(frame: int) -> int:
 		return messages[frame % messages.size()]
 
 
-	func has_input_delay_exceeded(frame: int) -> bool:
-		return frame > last_input_frame + input_delay
+	func has_input_delay_exceeded() -> bool:
+		return current_frame > last_input_frame + input_delay
 
+
+	func advance_to_frame(frame: int) -> void:
+		current_frame = frame
 
 
 #class NetPlayer:
