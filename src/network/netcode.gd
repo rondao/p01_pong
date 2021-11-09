@@ -66,80 +66,106 @@ func receive_game_state() -> Dictionary:
 
 
 class NetPlayer:
+	var input_delay := 0
+	var last_input_frame := -1
 	var messages := []
 
 
-	func _init():
-		for i in range(MAX_ROLLBACK):
-			messages.append({"frame": i, "input": Globals.GameInput.NONE})
-		for _i in range(INPUT_DELAY):
-			messages.append({"frame": 0, "input": Globals.GameInput.NONE})
+	func _init(input_delay_: int = 0) -> void:
+		input_delay = input_delay_
+		for _i in range(input_delay + 1):
+			messages.append(Globals.GameInput.NONE)
+
+
+	func set_input(input: int, frame: int) -> void:
+		last_input_frame = int(max(frame, last_input_frame))
+		messages[(frame + input_delay) % messages.size()] = input
 
 
 	func get_input(frame: int) -> int:
-		return messages[(frame) % messages.size()].input
+		return messages[frame % messages.size()]
 
 
-class LocalPlayer:
-	extends NetPlayer
+	func has_input_delay_exceeded(frame: int) -> bool:
+		return frame > last_input_frame + input_delay
 
 
-	func send_input(frame: int, input: int) -> void:
-		var delayed_frame := frame + INPUT_DELAY
-		if messages[delayed_frame % messages.size()].frame != delayed_frame: # Do not allow an Input to be changed.
-			messages[delayed_frame % messages.size()] = {"frame": delayed_frame, "input": input}
-# warning-ignore:unsafe_property_access
-		Netcode.game_data_channel.put_packet(var2bytes(messages))
 
-
-	func get_input(frame: int) -> int:
-		return messages[frame % messages.size()].input
-
-
-class RemotePlayer:
-	extends NetPlayer
-
-	var oldest_frame_received := MAX_ROLLBACK
-
-	func receive_input(frame: int) -> int:
-		var rollback_frame := frame
-
-		var highest_frame_received: int
-# warning-ignore:unsafe_property_access
-		while Netcode.game_data_channel.get_available_packet_count() > 0:
-# warning-ignore:unsafe_property_access
-# warning-ignore:unsafe_property_access
-			var remote_messages = bytes2var(Netcode.game_data_channel.get_packet())
-			for i in messages.size():
-				if (remote_messages[i].frame > messages[i].frame
-					and remote_messages[i].frame < frame + MAX_ROLLBACK # Ignore messages for frames we didn't processed yet.
-					and remote_messages[i].frame < oldest_frame_received + MAX_ROLLBACK):
-					# Have we predicted the wrong input?
-					if remote_messages[i].input != messages[i].input:
-						if remote_messages[i].frame < rollback_frame:
-							rollback_frame = remote_messages[i].frame
-					# Keep the highest frame we have processed.
-					if remote_messages[i].frame > highest_frame_received:
-						highest_frame_received = remote_messages[i].frame
-					messages[i] = remote_messages[i]
-		if highest_frame_received > oldest_frame_received:
-			oldest_frame_received = highest_frame_received
-		return rollback_frame
-
-
-	func has_max_rollback_exceeded(frame: int) -> bool:
-		return frame > oldest_frame_received + MAX_ROLLBACK
-
-
-	func set_input(frame: int, input: int) -> void:
-		messages[frame % messages.size()].input = input
-
-
-	func get_input(frame: int) -> int:
-		return .get_input(frame) if frame <= messages[frame % messages.size()].frame else predict_input(frame)
-
-
-	func predict_input(frame: int) -> int:
-		var predicted_input := .get_input(frame - 1)
-		set_input(frame, predicted_input)
-		return predicted_input
+#class NetPlayer:
+#	var messages := []
+#
+#
+#	func _init():
+#		for i in range(MAX_ROLLBACK):
+#			messages.append({"frame": i, "input": Globals.GameInput.NONE})
+#		for _i in range(INPUT_DELAY):
+#			messages.append({"frame": 0, "input": Globals.GameInput.NONE})
+#
+#
+#	func get_input(frame: int) -> int:
+#		return messages[(frame) % messages.size()].input
+#
+#
+#class LocalPlayer:
+#	extends NetPlayer
+#
+#
+#	func send_input(frame: int, input: int) -> void:
+#		var delayed_frame := frame + INPUT_DELAY
+#		if messages[delayed_frame % messages.size()].frame != delayed_frame: # Do not allow an Input to be changed.
+#			messages[delayed_frame % messages.size()] = {"frame": delayed_frame, "input": input}
+## warning-ignore:unsafe_property_access
+#		Netcode.game_data_channel.put_packet(var2bytes(messages))
+#
+#
+#	func get_input(frame: int) -> int:
+#		return messages[frame % messages.size()].input
+#
+#
+#class RemotePlayer:
+#	extends NetPlayer
+#
+#	var oldest_frame_received := MAX_ROLLBACK
+#
+#	func receive_input(frame: int) -> int:
+#		var rollback_frame := frame
+#
+#		var highest_frame_received: int
+## warning-ignore:unsafe_property_access
+#		while Netcode.game_data_channel.get_available_packet_count() > 0:
+## warning-ignore:unsafe_property_access
+## warning-ignore:unsafe_property_access
+#			var remote_messages = bytes2var(Netcode.game_data_channel.get_packet())
+#			for i in messages.size():
+#				if (remote_messages[i].frame > messages[i].frame
+#					and remote_messages[i].frame < frame + MAX_ROLLBACK # Ignore messages for frames we didn't processed yet.
+#					and remote_messages[i].frame < oldest_frame_received + MAX_ROLLBACK):
+#					# Have we predicted the wrong input?
+#					if remote_messages[i].input != messages[i].input:
+#						if remote_messages[i].frame < rollback_frame:
+#							rollback_frame = remote_messages[i].frame
+#					# Keep the highest frame we have processed.
+#					if remote_messages[i].frame > highest_frame_received:
+#						highest_frame_received = remote_messages[i].frame
+#					messages[i] = remote_messages[i]
+#		if highest_frame_received > oldest_frame_received:
+#			oldest_frame_received = highest_frame_received
+#		return rollback_frame
+#
+#
+#	func has_max_rollback_exceeded(frame: int) -> bool:
+#		return frame > oldest_frame_received + MAX_ROLLBACK
+#
+#
+#	func set_input(frame: int, input: int) -> void:
+#		messages[frame % messages.size()].input = input
+#
+#
+#	func get_input(frame: int) -> int:
+#		return .get_input(frame) if frame <= messages[frame % messages.size()].frame else predict_input(frame)
+#
+#
+#	func predict_input(frame: int) -> int:
+#		var predicted_input := .get_input(frame - 1)
+#		set_input(frame, predicted_input)
+#		return predicted_input

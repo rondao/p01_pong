@@ -1,7 +1,7 @@
 extends "res://addons/gut/test.gd"
 
 
-func test_bounce_spawn_sfx():
+func test_bounce_spawn_sfx() -> void:
 	ignore_method_when_doubling(Ball, "create")
 	var ball = double(Ball).new()
 	var bounce := Bounce.new()
@@ -12,7 +12,7 @@ func test_bounce_spawn_sfx():
 	assert_not_null(get_parent().get_parent().get_parent().get_node_or_null("CollisionSFX"))
 
 
-func test_paddle_bounce_normally_hitted():
+func test_paddle_bounce_normally_hitted() -> void:
 	ignore_method_when_doubling(Ball, "create")
 	ignore_method_when_doubling(Paddle, "create")
 
@@ -40,7 +40,7 @@ func test_paddle_bounce_normally_hitted():
 	assert_signal_emit_count(bounce, "normally_hitted", 1)
 
 
-func test_paddle_bounce_powered_hitted():
+func test_paddle_bounce_powered_hitted() -> void:
 	ignore_method_when_doubling(Ball, "create")
 	ignore_method_when_doubling(Paddle, "create")
 
@@ -67,7 +67,7 @@ func test_paddle_bounce_powered_hitted():
 	assert_signal_emit_count(bounce, "powered_hitted", 1)
 	assert_signal_emit_count(bounce, "normally_hitted", 0)
 
-func test_geometric_bounce():
+func test_geometric_bounce() -> void:
 	ignore_method_when_doubling(Ball, "create")
 	ignore_method_when_doubling(Paddle, "create")
 
